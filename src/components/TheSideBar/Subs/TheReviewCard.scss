@@ -1,0 +1,66 @@
+.cards-wrapper {
+  border: 1px solid var(--main-blue);
+  width: 100%;
+  height: 244px;
+  padding: 12px;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr) 96px;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas:
+    "title title images"
+    "stars review images"
+    "address address images";
+
+  grid-template-areas:
+    "title title review"
+    "address address stars"
+    "images images images";
+  align-items: center;
+  cursor: pointer;
+  row-gap: 10px;
+
+  p {
+    cursor: text;
+  }
+
+  .side-card-title {
+    grid-area: title;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .side-card-review-count,
+  .side-card-star-point {
+    width: fit-content;
+    justify-self: flex-end;
+  }
+  .side-card-star-point {
+    grid-area: stars;
+    line-height: 18px;
+    & > img {
+      margin-right: 4px;
+    }
+  }
+  .side-card-review-count {
+    grid-area: review;
+    color: var(--light-black);
+  }
+
+  .side-card-address-1,
+  .side-card-address-2 {
+    font-size: 12px;
+  }
+  .side-card-address-1 {
+    grid-area: address;
+    align-self: flex-end;
+  }
+
+  .side-card-img {
+    width: 120px;
+    height: 100%;
+    grid-area: images;
+    border: 1px solid var(--main-blue);
+    border-radius: 6px;
+  }
+}

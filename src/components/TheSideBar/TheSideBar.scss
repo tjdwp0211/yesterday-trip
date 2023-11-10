@@ -1,0 +1,44 @@
+.side-bar-wrapper {
+  height: calc(100vh - 80px);
+  width: 340px;
+  background-color: white;
+  position: absolute;
+  top: 0;
+  // left: 0;
+  transform: translateX(0%);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+  box-shadow: 0px 0px 3px var(--light-black);
+}
+
+.cards-container {
+  width: 100%;
+  height: calc(100vh - 80px);
+  overflow-y: scroll;
+  padding: 0;
+}
+
+.show {
+  transform: translateX(0%);
+}
+
+.hidden {
+  transform: translateX(-100%);
+}
+
+.side-bar-opener-wrapper {
+  position: relative;
+  align-self: right;
+  & > button {
+    position: absolute;
+    top: calc(50vh - 80px);
+    right: -22px;
+    z-index: 10;
+    border: none !important;
+    border-radius: 0px 12px 12px 0px;
+    &:hover {
+      box-shadow: 0px 0px 0px 0.1px var(--light-black);
+    }
+  }
+}

@@ -1,0 +1,33 @@
+.input-wrapper {
+  width: 70%;
+  height: 48px;
+  position: relative;
+  input {
+    width: 100%;
+    height: 80%;
+    font-size: 16px;
+  }
+  .placeholder-label {
+    position: absolute;
+    font-size: 14px;
+    top: 10px;
+    color: var(--main-gray);
+    transition:
+      top 0.2s ease,
+      left 0.2s ease,
+      color 0.2s ease;
+    cursor: text;
+  }
+}
+
+.init-border {
+  width: 100%;
+  height: 1px;
+  background-color: var(--main-gray);
+}
+
+.animation-border {
+  height: 1px;
+  transition: width 0.2s ease;
+  background-color: var(--main-blue);
+}

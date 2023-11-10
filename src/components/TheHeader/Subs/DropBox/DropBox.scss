@@ -1,0 +1,10 @@
+.drop-box-wrapper {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  border: 1px solid var(--main-gray);
+  background-color: white;
+  border-radius: 18px;
+  overflow: hidden;
+  z-index: 1;
+}
