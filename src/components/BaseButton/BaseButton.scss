@@ -1,0 +1,30 @@
+.round-button-root {
+  border-radius: 20px;
+  padding: 8px;
+  @media (max-width: 576px) {
+    min-width: 80px;
+    min-height: 36px;
+  }
+  display: flex;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+}
+
+.background-orange {
+  border: none;
+  background-color: var(--main-orange);
+  &,
+  & > * {
+    color: white;
+  }
+}
+
+.background-white {
+  border: 1px solid var(--main-orange);
+  background-color: white;
+  &,
+  & > * {
+    color: var(--main-orange);
+  }
+}
