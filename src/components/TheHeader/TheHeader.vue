@@ -27,19 +27,19 @@
       <h2>로그인</h2>
       <LoginInput id="loginEmail" type="text" placeholder="아이디" :value="loginEmail" :handler="login" />
       <LoginInput id="loginPassword" type="password" placeholder="비밀번호" :value="loginPassword" :handler="login" />
-      <Button type="button" width="72px" height="36px" color="white" :background-color="MAIN_BLUE" :sort-center="true">
+      <Button type="submit" width="72px" height="36px" color="white" :background-color="MAIN_BLUE" :sort-center="true">
         로그인
       </Button>
       <!-- 위 버튼 submit type으로 변경 후 form에 submit 달기 -->
     </form>
   </Modal>
   <Modal width="568px" height="520px" :visiblity="viewStateBasket.join" @toggle-visiblity="joinModal">
-    <form class="join-form">
+    <form class="join-form" @submit.prevent="handleRequestJoin">
       <h2>회원가입</h2>
       <LoginInput id="joinEmail" type="email" placeholder="이메일" :value="joinEmail" :handler="join" />
       <LoginInput id="joinPassword" type="password" placeholder="비밀번호" :value="joinPassword" :handler="join" />
-      <LoginInput id="joinNicname" type="text" placeholder="닉네임" :value="joinNicname" :handler="join" />
-      <Button type="button" width="72px" height="36px" color="white" :background-color="MAIN_BLUE" :sort-center="true">
+      <LoginInput id="joinNickname" type="text" placeholder="닉네임" :value="joinNickname" :handler="join" />
+      <Button type="submit" width="72px" height="36px" color="white" :background-color="MAIN_BLUE" :sort-center="true">
         회원가입
       </Button>
       <!-- 위 버튼 submit type으로 변경 후 form에 submit 달기 -->
@@ -55,16 +55,17 @@ import LoginInput from "./Subs/LoginInput/LoginInput.vue";
 import Button from "../BaseButton/BaseButton.vue";
 import Modal from "../BaseModal/BaseModal.vue";
 import SearchInput from "../TheSearchInput/TheSearchInput.vue";
+import { requestJoin, checkEmail } from "../../api/account/index.js";
 
 const { MAIN_BLUE, LIGHT_BLACK } = PALETTE;
 const searchValue = ref("");
 
-const viewStateBasket = reactive({ dropBox: false, login: false, join: false });
+const viewStateBasket = reactive({ dropBox: false, login: false, join: true });
 
 const loginValues = reactive({ loginEmail: "", loginPassword: "" });
-const joinValues = reactive({ joinEmail: "", joinPassword: "", joinNicname: "" });
+const joinValues = reactive({ joinEmail: "", joinPassword: "", joinNickname: "" });
 const { loginEmail, loginPassword } = toRefs(loginValues);
-const { joinEmail, joinPassword, joinNicname } = toRefs(joinValues);
+const { joinEmail, joinPassword, joinNickname } = toRefs(joinValues);
 
 const { dropBox, loginModal, joinModal } = {
   dropBox() {
@@ -87,7 +88,32 @@ const { search, login, join } = {
   },
   join(e) {
     joinValues[e.target.id] = e.target.value;
+    if (e.target.id == "joinEmail" && joinValues.joinEmail) {
+      handleCheckEmail();
+    }
   }
+};
+
+const handleRequestJoin = async () => {
+  await requestJoin({ email: joinEmail.value, password: joinPassword.value, nickname: joinNickname.value }).then(
+    (res) => {
+      console.log("JOIN :", res.data);
+      res.data;
+    }
+  );
+};
+
+let timer = null;
+const handleCheckEmail = () => {
+  if (timer) clearTimeout(timer);
+
+  timer = setTimeout(async () => {
+    if (joinEmail.value) {
+      await checkEmail(joinEmail.value).then((res) => {
+        console.log("CHECK EMAIL :", res.data);
+      });
+    }
+  }, 500);
 };
 </script>
 
