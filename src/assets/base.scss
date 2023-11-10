@@ -1,0 +1,29 @@
+:root {
+  --main-blue: #87c4ff; // 249, 109, 0
+
+  --main-black: #272829; // 39, 40, 41
+  --sub-black: #393e46; // 57, 62, 70
+  --light-black: #61677a; // 97, 103, 122
+  --main-gray: #d8d9da; // 216, 217, 218
+  --sub-gray: #f2f2f2; // 242, 242, 242
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+  color: var(--main-black);
+}
+
+a {
+  text-decoration: none;
+}
+
+body {
+  min-height: 100vh;
+  line-height: 1.6;
+  font-family: "Noto-Sans-KR", "Roboto";
+  font-size: 16px;
+}
