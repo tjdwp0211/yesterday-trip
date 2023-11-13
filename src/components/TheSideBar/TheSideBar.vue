@@ -15,15 +15,15 @@
         <img src="../../assets/imgs/arrow-left.svg" v-else width="12" height="12" />
       </Button>
       <ul class="cards-container">
-        <TheReviewCard v-for="(item, index) in items" :key="index">
+        <TheReviewCard v-for="(item, index) in DUMMY_ITEMS" :key="index">
           <p class="side-card-title">{{ item.title }}</p>
-          <p class="side-card-address-1">{{ item.add1 }} {{ item.add2 }}</p>
+          <p class="side-card-address-1">{{ item.addr1 }} {{ item.addr2 }}</p>
           <p class="side-card-address-2"></p>
           <p class="side-card-star-point">
             <img src="../../assets/imgs/star.svg" width="14" height="14" />{{ item.starPoint }}
           </p>
-          <p class="side-card-review-count">리뷰({{ item.reviewCount }})</p>
-          <img class="side-card-img" :src="item.img" />
+          <p class="side-card-review-count">리뷰({{ item.tel.length }})</p>
+          <img class="side-card-img" :src="item.firstimage" />
         </TheReviewCard>
       </ul>
     </div>
@@ -35,6 +35,7 @@ import { reactive, ref, toRefs } from "vue";
 import { PALETTE } from "../../palette";
 import Button from "../BaseButton/BaseButton.vue";
 import TheReviewCard from "./Subs/TheReviewCard.vue";
+import { DUMMY_ITEMS } from "../../dummy";
 
 const props = defineProps({ positionLeft: { type: Number, required: true } });
 const { positionLeft } = toRefs(props);

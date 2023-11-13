@@ -1,8 +1,6 @@
 <template>
   <header>
-    <svg width="72" height="72">
-      <circle cx="36" cy="36" r="36" :fill="PALETTE.MAIN_GRAY" />
-    </svg>
+    <img src="/logo.png" width="144" height="48" />
     <SearchInput :value="searchValue" :handler="search" />
     <div @focusin="dropBox" @focusout="dropBox">
       <Button
@@ -11,7 +9,7 @@
         height="48px"
         background-color="white"
         class="drop-box-opener"
-        :color="LIGHT_BLACK"
+        :color="MAIN_GRAY"
       >
         <img src="../../assets/imgs/bars.svg" width="20" height="20" />
         <img id="user-img" src="../../assets/imgs/unknowen-user.svg" width="32" height="32" />
@@ -57,10 +55,10 @@ import Modal from "../BaseModal/BaseModal.vue";
 import SearchInput from "../TheSearchInput/TheSearchInput.vue";
 import { requestJoin, checkEmail } from "../../api/account/index.js";
 
-const { MAIN_BLUE, LIGHT_BLACK } = PALETTE;
+const { MAIN_BLUE, MAIN_GRAY } = PALETTE;
 const searchValue = ref("");
 
-const viewStateBasket = reactive({ dropBox: false, login: false, join: true });
+const viewStateBasket = reactive({ dropBox: false, login: false, join: false });
 
 const loginValues = reactive({ loginEmail: "", loginPassword: "" });
 const joinValues = reactive({ joinEmail: "", joinPassword: "", joinNickname: "" });
