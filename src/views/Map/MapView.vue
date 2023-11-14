@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main id="map-view-main">
     <TheMap :spots="DUMMY_ITEMS"></TheMap>
     <TheSide :position-left="0"> </TheSide>
   </main>
@@ -7,7 +7,7 @@
 
 <script setup>
 import { reactive } from "vue";
-import TheSide from "../../components/TheSideBar/TheSideBar.vue";
+import TheSide from "../../components/TheAttractionSideBar/TheAttractionSideBar.vue";
 import TheMap from "../../components/TheMap/TheMap.vue";
 import { DUMMY_ITEMS } from "../../dummy.js";
 
