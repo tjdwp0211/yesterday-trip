@@ -1,7 +1,9 @@
-<script setup></script>
-
 <template>
   <div></div>
 </template>
 
-<style scoped></style>
+<script setup></script>
+
+<style lang="scss">
+@import "./HomeView.scss";
+</style>
