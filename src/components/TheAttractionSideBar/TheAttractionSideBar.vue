@@ -1,12 +1,12 @@
 <template>
+  <TheReviewSideBar
+    :view="reviewStates.visible"
+    :positionLeft="340"
+    :detail="detailAttractionBasket"
+    @viewHandler="handlers.reviewVisible"
+  ></TheReviewSideBar>
   <aside :class="`card-side-bar-wrapper ${attractionStates.className}`" :style="{ left: `${positionLeft}px` }">
     <div class="card-side-bar-container">
-      <TheReviewSideBar
-        :view="reviewStates.visible"
-        :positionLeft="340"
-        :detail="detailAttractionBasket"
-        @viewHandler="handlers.reviewVisible"
-      ></TheReviewSideBar>
       <Button
         class="opener"
         type="button"
@@ -16,6 +16,7 @@
         backgroundColor="white"
         :eventHandler="handlers.cardVisible"
         :sortCenter="true"
+        v-if="!reviewStates.visible"
       >
         <img src="../../assets/imgs/arrow-right.svg" v-if="!attractionStates.visible" width="12" height="12" />
         <img src="../../assets/imgs/arrow-left.svg" v-else width="12" height="12" />
