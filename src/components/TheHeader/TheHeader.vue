@@ -1,7 +1,11 @@
 <template>
   <header>
-    <img src="/logo.png" width="144" height="48" />
-    <SearchInput :value="searchValue" :handler="search" />
+    <!-- <img src="/logo.png" width="144" height="48" /> -->
+    <svg width="72" height="72">
+      <circle cx="36" cy="36" r="100" :fill="MAIN_BLUE" />
+    </svg>
+    <SelectBoxs></SelectBoxs>
+    <!-- <SearchInput :value="searchValue" :handler="search" /> -->
     <div @focusin="dropBox" @focusout="dropBox">
       <Button
         type="button"
@@ -53,6 +57,7 @@ import LoginInput from "./Subs/LoginInput/LoginInput.vue";
 import Button from "../BaseButton/BaseButton.vue";
 import Modal from "../BaseModal/BaseModal.vue";
 import SearchInput from "../TheSearchInput/TheSearchInput.vue";
+import SelectBoxs from "./Subs/SelectBoxs/SelectBoxs.vue";
 import { requestJoin, checkEmail } from "../../api/account/index.js";
 
 const { MAIN_BLUE, MAIN_GRAY } = PALETTE;
