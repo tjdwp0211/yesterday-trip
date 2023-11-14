@@ -7,7 +7,9 @@
       :style="{ height: view ? `${32 * 7.5}px` : `0px`, top: `${height - 2}%` }"
       @click.stop="optionsClickHandler"
     >
-      <div v-for="item in optionsItems" class="custom-option" :id="item.sidoCode">{{ item.name }}</div>
+      <div v-for="item in optionsItems" class="custom-option" :key="item.sidoCode" :id="item.sidoCode">
+        {{ item.name }}
+      </div>
     </div>
   </div>
 </template>
