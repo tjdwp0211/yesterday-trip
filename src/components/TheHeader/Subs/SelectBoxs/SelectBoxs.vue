@@ -1,51 +1,49 @@
 <template>
-  <form class="select-boxs-wrapper" :style="{ width: !visible ? `332px` : `632px` }" @click="visible = !visible">
+  <!-- <form class="select-boxs-wrapper" :style="{ width: !visible ? `332px` : `632px` }" @click.stop="handleOverlayView">
     <div class="default-box">
-      <p>여러 정보 둘러보기</p>
-      <p>키워드로 정보 찾기</p>
+      <p id="selectBoxs">여러 정보 둘러보기</p>
+      <p id="searchInput">키워드로 정보 찾기</p>
+    </div> -->
+  <Transition name="bounce">
+    <div class="select-boxs-container" :style="{ width: !visible ? `332px` : `632px` }" v-show="visible">
+      <Transition name="bounce">
+        <SelectBox
+          :view="sidoStates.visible"
+          :placeholder="sidoStates.placeholder"
+          :height="94"
+          @view-handler="(e) => handleView(e, sidoStates)"
+          @area-code-handler="(e) => handleCode(e, sidoStates)"
+          :options-items="sidoStates.items && sidoStates.items"
+        ></SelectBox
+      ></Transition>
+      <Transition name="bounce">
+        <SelectBox
+          :view="gunGuStates.visible"
+          :placeholder="gunGuStates.placeholder"
+          :height="94"
+          @view-handler="(e) => handleView(e, gunGuStates)"
+          @area-code-handler="(e) => handleCode(e, gunGuStates)"
+          :options-items="gunGuStates.items && gunGuStates.items"
+        ></SelectBox
+      ></Transition>
+      <Transition name="bounce">
+        <SelectBox
+          :view="contentTypeStates.visible"
+          :placeholder="contentTypeStates.placeholder"
+          :height="94"
+          @view-handler="(e) => handleView(e, contentTypeStates)"
+          @area-code-handler="(e) => handleCode(e, contentTypeStates)"
+          :options-items="contentTypeStates.items && contentTypeStates.items"
+        ></SelectBox
+      ></Transition>
     </div>
-    <Transition name="bounce" @after-enter="handleOverlayView">
-      <div class="select-boxs-container" :style="{ width: !visible ? `332px` : `632px` }" v-show="visible">
-        <Transition name="bounce">
-          <SelectBox
-            :view="sidoStates.visible"
-            :placeholder="sidoStates.placeholder"
-            :height="94"
-            @view-handler="(e) => handleView(e, sidoStates)"
-            @area-code-handler="(e) => handleCode(e, sidoStates)"
-            :options-items="sidoStates.items && sidoStates.items"
-          ></SelectBox
-        ></Transition>
-
-        <Transition name="bounce">
-          <SelectBox
-            :view="gunGuStates.visible"
-            :placeholder="gunGuStates.placeholder"
-            :height="94"
-            @view-handler="(e) => handleView(e, gunGuStates)"
-            @area-code-handler="(e) => handleCode(e, gunGuStates)"
-            :options-items="gunGuStates.items && gunGuStates.items"
-          ></SelectBox
-        ></Transition>
-
-        <Transition name="bounce">
-          <SelectBox
-            :view="contentTypeStates.visible"
-            :placeholder="contentTypeStates.placeholder"
-            :height="94"
-            @view-handler="(e) => handleView(e, contentTypeStates)"
-            @area-code-handler="(e) => handleCode(e, contentTypeStates)"
-            :options-items="contentTypeStates.items && contentTypeStates.items"
-          ></SelectBox
-        ></Transition>
-      </div>
-    </Transition>
-    <div v-if="visible" class="overlay" @click="handleOverlayView"></div>
-  </form>
+  </Transition>
+  <div v-if="visible" class="overlay" @click.stop="handleOverlayView"></div>
+  <!-- </form> -->
 </template>
 
 <script setup>
-import { ref, reactive, Transition, onMounted, watch } from "vue";
+import { ref, toRefs, reactive, Transition, onMounted, watch } from "vue";
 import SelectBox from "../../../BaseSelectBox/BaseSelectBox.vue";
 import { requsetGuGUn, requsetSido, requsetContentType } from "../../../../api/region";
 import { PALETTE } from "../../../../palette";
@@ -65,6 +63,7 @@ const contentTypeStates = reactive({
 });
 
 const { MAIN_BLACK } = PALETTE;
+const { visible } = toRefs(props);
 
 const handleView = (e, state) => {
   state.visible = !state.visible;
@@ -81,9 +80,9 @@ const handleOverlayView = () => {
 };
 
 onMounted(async () => {
-  const [sidoItems, contentTypeItems] = await Promise.all([requsetSido(), requsetContentType()]);
-  sidoStates.items = sidoItems.data;
-  contentTypeStates.items = contentTypeItems.data;
+  // const [sidoItems, contentTypeItems] = await Promise.all([requsetSido(), requsetContentType()]);
+  // sidoStates.items = sidoItems.data;
+  // contentTypeStates.items = contentTypeItems.data;
 });
 
 watch(
@@ -92,6 +91,9 @@ watch(
     requsetGuGUn(sidoStates.areaCode).then((res) => (gunGuStates.items = res.data));
   }
 );
+watch(visible, () => {
+  console.log(`visible.value :`, visible.value);
+});
 </script>
 
 <style lang="scss">
