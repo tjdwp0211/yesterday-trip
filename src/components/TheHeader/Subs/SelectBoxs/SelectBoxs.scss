@@ -1,0 +1,57 @@
+.default-box,
+.select-boxs-wrapper,
+.select-boxs-container {
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.select-boxs-wrapper {
+  width: 332px;
+  height: 46px;
+  position: relative;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.select-boxs-container {
+  width: 332px;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.default-box {
+  width: 100%;
+  border: 1px solid;
+  justify-content: center;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--sub-gray);
+  opacity: 0.5;
+}
+
+.bounce-enter-active {
+  animation: bounce-in 0.3s;
+  transition: all 0.3s ease;
+}
+.bounce-leave-active {
+  animation: bounce-in 0.3s reverse;
+  transition: all 0.3s ease;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
