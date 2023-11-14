@@ -26,7 +26,8 @@ const props = defineProps({
   type: { type: String, required: true },
   placeholder: { type: String, required: false },
   value: { type: String, required: true },
-  handler: { type: Function, required: true }
+  handler: { type: Function, required: true },
+  backgroundColor: { type: String, required: false }
 });
 const { id, type, placeholder, value, handler } = toRefs(props);
 const isFocused = ref(false);

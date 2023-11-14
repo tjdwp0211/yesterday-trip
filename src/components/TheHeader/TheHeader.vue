@@ -4,7 +4,7 @@
     <svg width="72" height="72">
       <circle cx="36" cy="36" r="100" :fill="MAIN_BLUE" />
     </svg>
-    <SelectBoxs></SelectBoxs>
+    <SelectBoxs :visible="viewStateBasket.selectBoxs" @view-handler="selectBoxs"></SelectBoxs>
     <!-- <SearchInput :value="searchValue" :handler="search" /> -->
     <div @focusin="dropBox" @focusout="dropBox">
       <Button
@@ -24,53 +24,51 @@
       </Button>
     </div>
   </header>
-  <Modal width="568px" height="412px" :visiblity="viewStateBasket.login" @toggle-visiblity="loginModal">
-    <form class="login-form">
-      <h2>로그인</h2>
-      <LoginInput id="loginEmail" type="text" placeholder="아이디" :value="loginEmail" :handler="login" />
-      <LoginInput id="loginPassword" type="password" placeholder="비밀번호" :value="loginPassword" :handler="login" />
-      <Button type="submit" width="72px" height="36px" color="white" :background-color="MAIN_BLUE" :sort-center="true">
-        로그인
-      </Button>
-      <!-- 위 버튼 submit type으로 변경 후 form에 submit 달기 -->
-    </form>
-  </Modal>
-  <Modal width="568px" height="520px" :visiblity="viewStateBasket.join" @toggle-visiblity="joinModal">
-    <form class="join-form" @submit.prevent="handleRequestJoin">
-      <h2>회원가입</h2>
-      <LoginInput id="joinEmail" type="email" placeholder="이메일" :value="joinEmail" :handler="join" />
-      <LoginInput id="joinPassword" type="password" placeholder="비밀번호" :value="joinPassword" :handler="join" />
-      <LoginInput id="joinNickname" type="text" placeholder="닉네임" :value="joinNickname" :handler="join" />
-      <Button type="submit" width="72px" height="36px" color="white" :background-color="MAIN_BLUE" :sort-center="true">
-        회원가입
-      </Button>
-      <!-- 위 버튼 submit type으로 변경 후 form에 submit 달기 -->
-    </form>
-  </Modal>
+  <LoginModal
+    width="568px"
+    height="412px"
+    :handle-request-login="handleRequestLogin"
+    :visiblity="viewStateBasket.login"
+    :view-handler="loginModal"
+    :email-value="loginEmail"
+    :password-value="loginPassword"
+    :input-value-handler="login"
+  ></LoginModal>
+  <JoinModal
+    width="568px"
+    height="520px"
+    :handle-request-join="handleRequestJoin"
+    :visiblity="viewStateBasket.join"
+    :view-handler="joinModal"
+    :email-value="joinEmail"
+    :password-value="joinPassword"
+    :nickname-value="joinNickname"
+    :input-value-handler="join"
+  ></JoinModal>
 </template>
 
 <script setup>
 import { ref, reactive, toRefs } from "vue";
 import { PALETTE } from "../../palette.js";
 import DropBox from "./Subs/DropBox/DropBox.vue";
-import LoginInput from "./Subs/LoginInput/LoginInput.vue";
 import Button from "../BaseButton/BaseButton.vue";
-import Modal from "../BaseModal/BaseModal.vue";
-import SearchInput from "../TheSearchInput/TheSearchInput.vue";
+import JoinModal from "./Subs/JoinModal/JoinModal.vue";
+import LoginModal from "./Subs/LoginModal/LoginModal.vue";
 import SelectBoxs from "./Subs/SelectBoxs/SelectBoxs.vue";
-import { requestJoin, checkEmail } from "../../api/account/index.js";
+import { requestLogin, requestJoin, checkEmail } from "../../api/account/index.js";
 
 const { MAIN_BLUE, MAIN_GRAY } = PALETTE;
 const searchValue = ref("");
+const visibleStates = ref(false);
 
-const viewStateBasket = reactive({ dropBox: false, login: false, join: false });
+const viewStateBasket = reactive({ dropBox: false, login: false, join: false, selectBoxs: false });
 
 const loginValues = reactive({ loginEmail: "", loginPassword: "" });
 const joinValues = reactive({ joinEmail: "", joinPassword: "", joinNickname: "" });
 const { loginEmail, loginPassword } = toRefs(loginValues);
 const { joinEmail, joinPassword, joinNickname } = toRefs(joinValues);
 
-const { dropBox, loginModal, joinModal } = {
+const { dropBox, loginModal, joinModal, selectBoxs } = {
   dropBox() {
     viewStateBasket.dropBox = !viewStateBasket.dropBox;
   },
@@ -79,6 +77,9 @@ const { dropBox, loginModal, joinModal } = {
   },
   joinModal() {
     viewStateBasket.join = !viewStateBasket.join;
+  },
+  selectBoxs() {
+    visibleStates.selectBoxs = !visibleStates.selectBoxs;
   }
 };
 
@@ -91,32 +92,23 @@ const { search, login, join } = {
   },
   join(e) {
     joinValues[e.target.id] = e.target.value;
-    if (e.target.id == "joinEmail" && joinValues.joinEmail) {
-      handleCheckEmail();
-    }
   }
 };
 
 const handleRequestJoin = async () => {
   await requestJoin({ email: joinEmail.value, password: joinPassword.value, nickname: joinNickname.value }).then(
     (res) => {
-      console.log("JOIN :", res.data);
+      console.log("res.data :", res.data);
       res.data;
     }
   );
 };
 
-let timer = null;
-const handleCheckEmail = () => {
-  if (timer) clearTimeout(timer);
-
-  timer = setTimeout(async () => {
-    if (joinEmail.value) {
-      await checkEmail(joinEmail.value).then((res) => {
-        console.log("CHECK EMAIL :", res.data);
-      });
-    }
-  }, 500);
+const handleRequestLogin = async () => {
+  await requestLogin({ principal: loginEmail.value, credentials: loginPassword.value }).then((res) => {
+    console.log("res.data :", res.data);
+    res.data;
+  });
 };
 </script>
 

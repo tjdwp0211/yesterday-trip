@@ -1,84 +1,97 @@
 <template>
-  <form
-    class="select-boxs-wrapper"
-    :style="{ width: !visibleStates.selectBox ? `332px` : `600px` }"
-    @click="visibleStates.selectBox = !visibleStates.selectBox"
-  >
-    <div class="default-box">지역 선택 해줘~~~</div>
+  <form class="select-boxs-wrapper" :style="{ width: !visible ? `332px` : `632px` }" @click="visible = !visible">
+    <div class="default-box">
+      <p>여러 정보 둘러보기</p>
+      <p>키워드로 정보 찾기</p>
+    </div>
     <Transition name="bounce" @after-enter="handleOverlayView">
-      <div
-        class="select-boxs-container"
-        :style="{ width: !visibleStates.selectBox ? `332px` : `600px` }"
-        v-show="visibleStates.selectBox"
-      >
+      <div class="select-boxs-container" :style="{ width: !visible ? `332px` : `632px` }" v-show="visible">
         <Transition name="bounce">
           <SelectBox
-            :view="areaStates.visible"
-            :placeholder="areaStates.placeholder"
-            :height="32"
-            @view-handler="(e) => handleView(e, areaStates)"
-            @area-code-handler="(e) => handleCode(e, areaStates)"
-            :options-items="areaStates.items"
+            :view="sidoStates.visible"
+            :placeholder="sidoStates.placeholder"
+            :height="94"
+            @view-handler="(e) => handleView(e, sidoStates)"
+            @area-code-handler="(e) => handleCode(e, sidoStates)"
+            :options-items="sidoStates.items && sidoStates.items"
           ></SelectBox
         ></Transition>
 
         <Transition name="bounce">
           <SelectBox
-            :view="siGunGuStates.visible"
-            :placeholder="siGunGuStates.placeholder"
-            :height="32"
-            @view-handler="(e) => handleView(e, siGunGuStates)"
-            @area-code-handler="(e) => handleCode(e, siGunGuStates)"
-            :options-items="siGunGuStates.items"
+            :view="gunGuStates.visible"
+            :placeholder="gunGuStates.placeholder"
+            :height="94"
+            @view-handler="(e) => handleView(e, gunGuStates)"
+            @area-code-handler="(e) => handleCode(e, gunGuStates)"
+            :options-items="gunGuStates.items && gunGuStates.items"
           ></SelectBox
         ></Transition>
 
         <Transition name="bounce">
           <SelectBox
-            :view="contentTpyeStates.visible"
-            :placeholder="contentTpyeStates.placeholder"
-            :height="32"
-            @view-handler="(e) => handleView(e, contentTpyeStates)"
-            @area-code-handler="(e) => handleCode(e, contentTpyeStates)"
-            :options-items="contentTpyeStates.items"
+            :view="contentTypeStates.visible"
+            :placeholder="contentTypeStates.placeholder"
+            :height="94"
+            @view-handler="(e) => handleView(e, contentTypeStates)"
+            @area-code-handler="(e) => handleCode(e, contentTypeStates)"
+            :options-items="contentTypeStates.items && contentTypeStates.items"
           ></SelectBox
         ></Transition>
       </div>
     </Transition>
-    <div v-if="visibleStates.overlay" class="overlay" @click="handleOverlayView"></div>
+    <div v-if="visible" class="overlay" @click="handleOverlayView"></div>
   </form>
 </template>
 
 <script setup>
-import { ref, reactive, Transition, onMounted } from "vue";
+import { ref, reactive, Transition, onMounted, watch } from "vue";
 import SelectBox from "../../../BaseSelectBox/BaseSelectBox.vue";
-import { requsetSido } from "../../../../api/region";
+import { requsetGuGUn, requsetSido, requsetContentType } from "../../../../api/region";
+import { PALETTE } from "../../../../palette";
 
-const visibleStates = reactive({ selectBox: false, overlay: false });
+const props = defineProps({
+  visible: { type: Boolean, required: true }
+});
+const emit = defineEmits(["viewHandler"]);
 
-const areaStates = reactive({ placeholder: "지역을 골라주세요.", visible: false, areaCode: 1, items: [] });
-const siGunGuStates = reactive({ placeholder: "지역을 골라주세요.", visible: false, areaCode: 1, items: [] });
-const contentTpyeStates = reactive({ placeholder: "지역을 골라주세요.", visible: false, areaCode: 1, items: [] });
+const sidoStates = reactive({ placeholder: "지역을 골라주세요", visible: false, areaCode: null, items: null });
+const gunGuStates = reactive({ placeholder: "자세한 지역도 알려주세요", visible: false, areaCode: null, items: null });
+const contentTypeStates = reactive({
+  placeholder: "무엇을 찾고 계신가요",
+  visible: false,
+  areaCode: null,
+  items: null
+});
+
+const { MAIN_BLACK } = PALETTE;
 
 const handleView = (e, state) => {
   state.visible = !state.visible;
   state.placeholder = e.target.innerText;
+  if (!sidoStates.areaCode && state == gunGuStates && !gunGuStates.items) {
+    gunGuStates.placeholder = "지역을 먼저 골라주세요.";
+  }
 };
 const handleCode = (e, state) => {
   state.areaCode = e.target.id;
-  console.log(`IN CODE placeholder :`, state.placeholder);
-  console.log(`IN CODE areaCode :`, state.areaCode);
 };
-const handleOverlayView = (test) => {
-  visibleStates.overlay = !visibleStates.overlay;
+const handleOverlayView = () => {
+  emit("viewHandler");
 };
 
 onMounted(async () => {
-  await requsetSido().then((res) => {
-    console.log(`res.data :`, res.data);
-    return res.data;
-  });
+  const [sidoItems, contentTypeItems] = await Promise.all([requsetSido(), requsetContentType()]);
+  sidoStates.items = sidoItems.data;
+  contentTypeStates.items = contentTypeItems.data;
 });
+
+watch(
+  () => sidoStates.areaCode,
+  () => {
+    requsetGuGUn(sidoStates.areaCode).then((res) => (gunGuStates.items = res.data));
+  }
+);
 </script>
 
 <style lang="scss">

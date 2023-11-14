@@ -5,7 +5,7 @@
   background-color: white;
   border-radius: 18px;
   padding: 12px;
-  z-index: 3;
+  z-index: 14;
 }
 
 .modal-container {
@@ -23,7 +23,7 @@
   height: 100vh;
   background-color: var(--main-black);
   opacity: 0.5;
-  z-index: 2;
+  z-index: 13;
 }
 
 .required-button {
