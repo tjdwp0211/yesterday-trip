@@ -1,7 +1,12 @@
 <template>
-  <aside :class="`card-side-bar-wrapper ${cardStates.className}`" :style="{ left: `${positionLeft}px` }">
+  <aside :class="`card-side-bar-wrapper ${attractionStates.className}`" :style="{ left: `${positionLeft}px` }">
     <div class="card-side-bar-container">
-      <TheReviewSideBar :positionLeft="340" @viewHandler="handlers.reviewVisible"></TheReviewSideBar>
+      <TheReviewSideBar
+        :view="reviewStates.visible"
+        :positionLeft="340"
+        :detail="detailAttractionBasket"
+        @viewHandler="handlers.reviewVisible"
+      ></TheReviewSideBar>
       <Button
         class="opener"
         type="button"
@@ -12,12 +17,12 @@
         :eventHandler="handlers.cardVisible"
         :sortCenter="true"
       >
-        <img src="../../assets/imgs/arrow-right.svg" v-if="!cardStates.visible" width="12" height="12" />
+        <img src="../../assets/imgs/arrow-right.svg" v-if="!attractionStates.visible" width="12" height="12" />
         <img src="../../assets/imgs/arrow-left.svg" v-else width="12" height="12" />
       </Button>
       <ul class="cards-container">
-        <TheReviewCard
-          v-for="(item, index) in DUMMY_ITEMS"
+        <TheAttractionCard
+          v-for="(item, index) in attractionsItems"
           :key="index"
           :contentId="index + 1"
           :reviewSideBarHandler="handlers.reviewVisible"
@@ -32,36 +37,42 @@
           <p class="side-card-review-count">리뷰({{ item.tel.length }})</p>
           <img class="side-card-img" :src="item.firstimage" />
           <!-- imageUrl -->
-        </TheReviewCard>
+        </TheAttractionCard>
       </ul>
     </div>
   </aside>
 </template>
 
 <script setup>
-import { reactive, ref, toRefs } from "vue";
+// attractionsItems에 ref 인자로 넣은 DUMMY_ITEMS를 API로 이용해서 ITEMS를 동적으로 변경하기
+import { reactive, ref, toRefs, watch } from "vue";
+import { useRoute } from "vue-router";
 import { PALETTE } from "../../palette";
 import Button from "../BaseButton/BaseButton.vue";
-import TheReviewCard from "./Subs/TheReviewCard/TheReviewCard.vue";
+import TheAttractionCard from "./Subs/TheAttractionCard/TheAttractionCard.vue";
 import { DUMMY_ITEMS } from "../../dummy";
-import TheReviewSideBar from "./Subs/TheReviewSideBar/TheReviewSideBar.vue";
+import TheReviewSideBar from "../TheReviewSideBar/TheReviewSideBar.vue";
 
 const props = defineProps({
   positionLeft: { type: Number, required: true }
 });
+const { positionLeft } = toRefs(props);
 
-const { view, positionLeft } = toRefs(props);
+const route = useRoute();
 
-const cardStates = reactive({ className: "show", visible: true });
+const attractionsItems = ref(DUMMY_ITEMS);
+const detailAttractionBasket = ref(attractionsItems.value[0]);
+
+const attractionStates = reactive({ className: "show", visible: true });
 const reviewStates = reactive({ className: "hidden", visible: false });
 
 const handlers = {
   cardVisible() {
-    cardStates.visible = !cardStates.visible;
-    if (cardStates.visible) {
-      cardStates.className = "show";
+    attractionStates.visible = !attractionStates.visible;
+    if (attractionStates.visible) {
+      attractionStates.className = "show";
     } else {
-      cardStates.className = "hidden";
+      attractionStates.className = "hidden";
     }
   },
   reviewVisible(isVisible) {
@@ -73,8 +84,16 @@ const handlers = {
     }
   }
 };
+
+watch(
+  () => route.params.contentId,
+  () => {
+    const itemIndex = route.params.contentId - 1;
+    detailAttractionBasket.value = attractionsItems.value[itemIndex];
+  }
+);
 </script>
 
 <style lang="scss">
-@import "./TheSideBar.scss";
+@import "./TheAttractionSideBar.scss";
 </style>
