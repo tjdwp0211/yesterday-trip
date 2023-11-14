@@ -1,5 +1,8 @@
 <template>
-  <div></div>
+  <main id="home-view-main">
+    <section style="background-color: aquamarine"></section>
+    <section style="background-color: brown"></section>
+  </main>
 </template>
 
 <script setup></script>
