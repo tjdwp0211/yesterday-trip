@@ -10,6 +10,9 @@
     height: 20%;
     color: var(--sub-black);
   }
+  & > div {
+    width: 70%;
+  }
 }
 
 .already-exist {

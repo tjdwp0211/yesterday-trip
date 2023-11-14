@@ -2,14 +2,18 @@
   <BaseModal :width="width" :height="height" :visiblity="visiblity" @toggle-visiblity="viewHandler">
     <form class="login-form" @submit.prevent="handleRequestLogin">
       <h2>로그인</h2>
-      <LoginInput id="loginEmail" type="text" placeholder="아이디" :value="emailValue" :handler="inputValueHandler" />
-      <LoginInput
-        id="loginPassword"
-        type="password"
-        placeholder="비밀번호"
-        :value="passwordValue"
-        :handler="inputValueHandler"
-      />
+      <div>
+        <LoginInput id="loginEmail" type="text" placeholder="아이디" :value="emailValue" :handler="inputValueHandler" />
+      </div>
+      <div>
+        <LoginInput
+          id="loginPassword"
+          type="password"
+          placeholder="비밀번호"
+          :value="passwordValue"
+          :handler="inputValueHandler"
+        />
+      </div>
       <BaseButton
         type="submit"
         width="124px"

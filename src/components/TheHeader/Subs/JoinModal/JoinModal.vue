@@ -11,14 +11,14 @@
         type="password"
         placeholder="비밀번호"
         :value="passwordValue"
-        :handler="inputValueHandler"
+        :handler="handleEmailChange"
       />
       <LoginInput
         id="joinNickname"
         type="text"
         placeholder="닉네임"
         :value="nicknameValue"
-        :handler="inputValueHandler"
+        :handler="handleEmailChange"
       />
       <BaseButton
         type="submit"
@@ -30,7 +30,6 @@
       >
         회원가입
       </BaseButton>
-      <!-- 위 버튼 submit type으로 변경 후 form에 submit 달기 -->
     </form>
   </BaseModal>
 </template>
@@ -50,10 +49,10 @@ const props = defineProps({
   emailValue: { type: String, required: true },
   passwordValue: { type: String, required: true },
   nicknameValue: { type: String, required: true },
-  handleRequestJoin: { type: Function, required: true }
-  //   inputValueHandler: { type: Function, required: true }
+  handleRequestJoin: { type: Function, required: true },
+  inputValueHandler: { type: Function, required: true }
 });
-const emit = defineEmits(["inputValueHandler"]);
+
 const {
   visiblity,
   width,
@@ -62,8 +61,8 @@ const {
   emailValue,
   passwordValue,
   nicknameValue,
-  handleRequestJoin
-  //   inputValueHandler
+  handleRequestJoin,
+  inputValueHandler
 } = toRefs(props);
 const { MAIN_BLUE } = PALETTE;
 
@@ -76,19 +75,18 @@ const handleCheckEmail = () => {
     if (emailValue.value) {
       await checkEmail(emailValue.value).then((res) => {
         alreadyExistEmail.value = res.data;
-        console.log("alreadyExistEmail.value :", alreadyExistEmail.value);
+        console.log("이메일 중복 API THEN :", alreadyExistEmail.value);
       });
     }
   }, 500);
 };
 
 const handleEmailChange = (e) => {
-  emit("inputValueHandler", e);
+  inputValueHandler.value(e);
 
   if (e.target.id == "joinEmail" && emailValue.value) {
     handleCheckEmail();
   }
-  console.log("test :", emailValue);
 };
 </script>
 <style lang="scss">
