@@ -32,7 +32,7 @@
     :view-handler="loginModal"
     :email-value="loginEmail"
     :password-value="loginPassword"
-    :input-value-handler="login"
+    @input-value-handler="login"
   ></LoginModal>
   <JoinModal
     width="568px"
