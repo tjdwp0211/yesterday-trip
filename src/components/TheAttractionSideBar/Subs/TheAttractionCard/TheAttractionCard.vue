@@ -18,5 +18,5 @@ const { reviewSideBarHandler } = toRefs(props);
 </script>
 
 <style lang="scss">
-@import "./TheReviewCard.scss";
+@import "./TheAttractionCard.scss";
 </style>
