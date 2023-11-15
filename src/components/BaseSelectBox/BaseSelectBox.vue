@@ -1,13 +1,13 @@
 <template>
-  <div class="drop-wrapper" @click.stop="selectBoxViewHandler" :style="{ height: height }">
-    <div class="placeholder" :style="{ height: height }">{{ placeholder }}</div>
+  <div class="drop-wrapper" @click.stop="selectBoxViewHandler" :style="{ height: `${height}px` }">
+    <div class="placeholder" :style="{ height: `${height}px` }">{{ placeholder }}</div>
     <div
       v-if="optionsItems"
       class="drop-container"
-      :style="{ height: view ? `${32 * 7.5}px` : `0px`, top: `${height - 2}%` }"
+      :style="{ height: view ? `${26 * 7.5}px` : `0px`, top: `${height - 2}px` }"
       @click.stop="optionsClickHandler"
     >
-      <div v-for="item in optionsItems" class="custom-option" :key="item.sidoCode" :id="item.sidoCode">
+      <div v-for="item in optionsItems" class="custom-option" :key="item.id" :id="item.id">
         {{ item.name }}
       </div>
     </div>
@@ -23,7 +23,6 @@ const props = defineProps({
   height: { type: Number, required: true }
 });
 const { view, placeholder, optionsItems, height } = toRefs(props);
-console.log("optionsItems :", optionsItems.value);
 
 const emit = defineEmits(["viewHandler", "areaCodeHandler"]);
 
