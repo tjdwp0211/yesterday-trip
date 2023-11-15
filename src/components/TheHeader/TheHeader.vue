@@ -1,7 +1,7 @@
 <template>
   <header>
     <!-- <img src="/logo.png" width="144" height="48" /> -->
-    <svg width="72" height="72">
+    <svg width="72" height="72" @click="() => router.push('/')">
       <circle cx="36" cy="36" r="100" :fill="MAIN_BLUE" />
     </svg>
     <form class="select-boxs-wrapper" :style="{ width: !viewStateBasket.selectBoxs ? `300px` : `632px` }">
@@ -92,11 +92,17 @@ const { loginEmail, loginPassword } = toRefs(loginValues);
 const { joinEmail, joinPassword, joinNickname } = toRefs(joinValues);
 
 const viewStateBasketHandler = (paramsKey) => {
-  if (paramsKey == "selectBoxs") {
-    viewStateBasket.searchInput = false;
-  } else if (paramsKey == "searchInput") {
-    viewStateBasket.selectBoxs = false;
+  if (paramsKey == "selectBoxs" || paramsKey == "searchInput") {
+    if (route.path !== "map") {
+      router.push("/map");
+    }
+    if (paramsKey == "selectBoxs") {
+      viewStateBasket.searchInput = false;
+    } else if (paramsKey == "searchInput") {
+      viewStateBasket.selectBoxs = false;
+    }
   }
+
   viewStateBasket[paramsKey] = !viewStateBasket[paramsKey];
 };
 const closeUserInteraction = () => {
