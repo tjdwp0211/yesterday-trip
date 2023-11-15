@@ -8,8 +8,8 @@ import { PALETTE } from "../../palette";
 
 const { VITE_NAVER_MAP_CLIENT_ID } = import.meta.env;
 
-const props = defineProps({ spots: { type: Object, required: true } });
-const { spots } = toRefs(props);
+const props = defineProps({ attractionItems: { type: Object, required: true } });
+const { attractionItems } = toRefs(props);
 const naverMap = ref(null);
 const markers = ref([]);
 const infoWindows = ref([]);
@@ -49,8 +49,8 @@ const initMap = () => {
     zoom: 10
   };
   naverMap.value = new naver.maps.Map(container, options);
-  spots.value.forEach((spot, i) => {
-    markers.value.push(createMarker(spot.mapy, spot.mapx, spot.title));
+  attractionItems.value?.forEach((spot, i) => {
+    markers.value.push(createMarker(spot.latitude, spot.longitude, spot.title));
     infoWindows.value.push(createInfoWindow(spot.title));
   });
 };

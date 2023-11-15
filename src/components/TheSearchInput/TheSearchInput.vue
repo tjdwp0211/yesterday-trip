@@ -1,8 +1,8 @@
 <template>
-  <Transition name="bounce">
+  <Transition name="bounce" :duration="300">
     <div id="search-input-wrapper" v-if="visible">
       <BaseInput id="search" type="text" placeholder="검색창" :value="value" @handle-change="handler" />
-      <BaseButton
+      <!-- <BaseButton
         type="submit"
         width="36px"
         height="36px"
@@ -12,7 +12,7 @@
         :sortCenter="true"
       >
         <img src="../../assets/imgs/search.svg" width="12" height="12" />
-      </BaseButton>
+      </BaseButton> -->
     </div>
   </Transition>
 </template>

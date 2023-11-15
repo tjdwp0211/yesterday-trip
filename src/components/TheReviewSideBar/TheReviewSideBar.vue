@@ -1,9 +1,13 @@
 <template>
-  <Transition name="slide-fade" :duration="300" @after-enter="contentView = !contentView">
-    <aside :class="`review-side-bar-wrapper`" :style="{ left: `${positionLeft}px` }" v-if="route.params.contentId">
-      <div class="review-side-bar-container" v-if="route.params.contentId || contentView">
+  <Transition name="slide-fade" :duration="300" @after-enter="detailContent.view = !detailContent.view">
+    <aside
+      :class="`review-side-bar-wrapper`"
+      :style="{ left: `${positionLeft}px` }"
+      v-if="route.params.contentId && detailContent.detail"
+    >
+      <div class="review-side-bar-container" v-if="route.params.contentId || detailContent.view">
         <!-- <div class="item-details-wrapper"> -->
-        <h2>{{ route.params.contentId }}리뷰입니다.</h2>
+        <h2>{{ detailContent.detail.title }}</h2>
         <Button
           class="review-side-bar-closer"
           type="button"
@@ -14,11 +18,18 @@
           :eventHandler="closeRevieSideBar"
           :sortCenter="true"
         >
-          <img src="../../assets/imgs/close.svg" v-if="route.params.contentId || contentView" width="12" height="12" />
+          <img
+            src="../../assets/imgs/close.svg"
+            width="12"
+            height="12"
+            v-if="route.params.contentId || detailContent.view"
+          />
         </Button>
         <!-- </div> -->
         <article class="item-details-container"></article>
+        <TheReviewForm></TheReviewForm>
         <section class="review-cards-wrapper">
+          <!-- <TheReviewCard></TheReviewCard>
           <TheReviewCard></TheReviewCard>
           <TheReviewCard></TheReviewCard>
           <TheReviewCard></TheReviewCard>
@@ -37,8 +48,7 @@
           <TheReviewCard></TheReviewCard>
           <TheReviewCard></TheReviewCard>
           <TheReviewCard></TheReviewCard>
-          <TheReviewCard></TheReviewCard>
-          <TheReviewCard></TheReviewCard>
+          <TheReviewCard></TheReviewCard> -->
         </section>
       </div>
     </aside>
@@ -46,43 +56,43 @@
 </template>
 
 <script setup>
-import { ref, toRefs, watch } from "vue";
+import { reactive, toRefs, watch, onUnmounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { PALETTE } from "../../palette";
 import Button from "../BaseButton/BaseButton.vue";
-import TheReviewCard from "./Subs/TheReviewCard/TheReviewCard.vue";
-import { useRoute, useRouter } from "vue-router";
+import TheReviewForm from "./Subs/TheReviewForm/TheReviewForm.vue";
+import { useAttrectionStore } from "../../stores/attraction";
 
 const route = useRoute();
 const router = useRouter();
+const attractionStore = useAttrectionStore();
+
 const emit = defineEmits(["viewHandler"]);
 const props = defineProps({
   view: { type: Boolean, required: true },
-  positionLeft: { type: Number, required: true },
-  detail: { type: Object, required: true }
+  positionLeft: { type: Number, required: true }
 });
-const { positionLeft, view, detail } = toRefs(props);
-const contentView = ref(false);
-
-watch(contentView, () => {
-  console.log(`IN CHILDREN contentView :`, contentView.value);
-});
+const { positionLeft } = toRefs(props);
+const detailContent = reactive({ view: false, detail: null });
 
 watch(
   () => route.params.contentId,
   () => {
     if (route.params.contentId) {
-      emit("viewHandler", true);
-    } else {
-      emit("viewHandler", false);
+      detailContent.detail = attractionStore.getter.one(route.params.contentId - 1).value;
     }
   }
 );
 
 const closeRevieSideBar = () => {
   emit("viewHandler", false);
-  contentView.value = false;
+  detailContent.view = false;
   router.push("/map");
 };
+
+onUnmounted(() => {
+  router.push("/map");
+});
 </script>
 
 <style lang="scss">
