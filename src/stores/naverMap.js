@@ -1,13 +1,28 @@
-import { ref, computed } from "vue";
+import { ref, computed, reactive } from "vue";
 import { defineStore } from "pinia";
 
-export const useCounterStore = defineStore("naverMap", () => {
-  const count = ref(0);
+export const useNaverMapStore = defineStore("naverMap", () => {
+  const state = reactive({ markers: [], infoWindows: [] });
 
-  const doubleCount = computed(() => count.value * 2);
-  function increment() {
-    count.value++;
-  }
+  const action = {};
 
-  return { count, doubleCount, increment };
+  const getter = {
+    markersList() {
+      return computed(() => state.markers);
+    },
+    infoWindowsList() {
+      return computed(() => state.infoWindows);
+    },
+    markerOne(index) {
+      return computed(() => state.markers[index]);
+    },
+    infoWindowOne(index) {
+      return computed(() => state.infoWindows[index]);
+    },
+    getOneCouple(index) {
+      return computed(() => ({ marker: state.markers[index], infoWindow: state.infoWindows[index] }));
+    }
+  };
+
+  return { state, action, getter };
 });
