@@ -5,13 +5,14 @@
   padding: 12px;
 
   display: grid;
-  grid-template-columns: repeat(2, 1fr) 120px;
-  grid-template-rows: repeat(3, 1fr);
-  grid-template-areas:
-    "title title images"
-    "stars review images"
-    "address address images";
-
+  grid-template-columns: repeat(2, 37%) 26%;
+  grid-template-rows: repeat(2, 15%);
+  // 이미지 있을 때 : grid-template-rows: repeat(2, 15%) 1fr;
+  // grid-template-areas:
+  //   "title title images"
+  //   "stars review images"
+  //   "address address images";
+  //
   grid-template-areas:
     "title title review"
     "address address stars"
@@ -38,6 +39,7 @@
   .side-card-star-point {
     grid-area: stars;
     line-height: 18px;
+    align-self: flex-start;
     & > img {
       margin-right: 4px;
     }
@@ -47,13 +49,10 @@
     color: var(--light-black);
   }
 
-  .side-card-address-1,
-  .side-card-address-2 {
+  .side-card-address {
     font-size: 12px;
-  }
-  .side-card-address-1 {
     grid-area: address;
-    align-self: flex-end;
+    align-self: flex-start;
   }
 
   .side-card-img {

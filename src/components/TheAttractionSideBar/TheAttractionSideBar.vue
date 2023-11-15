@@ -2,10 +2,13 @@
   <TheReviewSideBar
     :view="reviewStates.visible"
     :positionLeft="340"
-    :detail="detailAttractionBasket"
     @viewHandler="handlers.reviewVisible"
   ></TheReviewSideBar>
-  <aside :class="`card-side-bar-wrapper ${attractionStates.className}`" :style="{ left: `${positionLeft}px` }">
+  <aside
+    :class="`card-side-bar-wrapper ${attractionStates.className}`"
+    :style="{ left: `${positionLeft}px` }"
+    v-if="attractionItems"
+  >
     <div class="card-side-bar-container">
       <Button
         class="opener"
@@ -23,20 +26,19 @@
       </Button>
       <ul class="cards-container">
         <TheAttractionCard
-          v-for="(item, index) in attractionsItems"
+          v-for="(item, index) in attractionItems"
           :key="index"
           :contentId="index + 1"
           :reviewSideBarHandler="handlers.reviewVisible"
         >
           <p class="side-card-title">{{ item.title }}</p>
-          <p class="side-card-address-1">{{ item.addr1 }} {{ item.addr2 }}</p>
+          <p class="side-card-address">{{ item.address }}</p>
           <!-- address -->
-          <p class="side-card-address-2"></p>
           <p class="side-card-star-point">
             <img src="../../assets/imgs/star.svg" width="14" height="14" />{{ item.starPoint }}
           </p>
-          <p class="side-card-review-count">리뷰({{ item.tel.length }})</p>
-          <img class="side-card-img" :src="item.firstimage" />
+          <p class="side-card-review-count">리뷰({{ item.tel.length + 900 }})</p>
+          <img class="side-card-img" v-if="item.imageUrl" :src="item.imageUrl" />
           <!-- imageUrl -->
         </TheAttractionCard>
       </ul>
@@ -45,24 +47,17 @@
 </template>
 
 <script setup>
-// attractionsItems에 ref 인자로 넣은 DUMMY_ITEMS를 API로 이용해서 ITEMS를 동적으로 변경하기
-import { reactive, ref, toRefs, watch } from "vue";
-import { useRoute } from "vue-router";
+import { reactive, toRefs } from "vue";
 import { PALETTE } from "../../palette";
 import Button from "../BaseButton/BaseButton.vue";
 import TheAttractionCard from "./Subs/TheAttractionCard/TheAttractionCard.vue";
-import { DUMMY_ITEMS } from "../../dummy";
 import TheReviewSideBar from "../TheReviewSideBar/TheReviewSideBar.vue";
 
 const props = defineProps({
+  attractionItems: { type: Object, required: true },
   positionLeft: { type: Number, required: true }
 });
-const { positionLeft } = toRefs(props);
-
-const route = useRoute();
-
-const attractionsItems = ref(DUMMY_ITEMS);
-const detailAttractionBasket = ref(attractionsItems.value[0]);
+const { attractionItems, positionLeft } = toRefs(props);
 
 const attractionStates = reactive({ className: "show", visible: true });
 const reviewStates = reactive({ className: "hidden", visible: false });
@@ -86,13 +81,18 @@ const handlers = {
   }
 };
 
-watch(
-  () => route.params.contentId,
-  () => {
-    const itemIndex = route.params.contentId - 1;
-    detailAttractionBasket.value = attractionsItems.value[itemIndex];
-  }
-);
+// address : "경기도 광주시 퇴촌면 광동리"
+// contentId : 572404
+// contentTypeId : 15
+// gugunCode : 5
+// imageUrl : "http://tong.visitkorea.or.kr/cms/resource/52/2549352_image2_1.JPG"
+// latitude : 37.4728654628
+// longitude : 127.3052522935
+// mlevel : "6"
+// sidoCode : 31
+// tel : "031-760-4959"
+// title : "퇴촌 토마토축제"
+// zipcode : "12711"
 </script>
 
 <style lang="scss">
