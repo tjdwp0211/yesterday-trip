@@ -1,17 +1,23 @@
 <template>
   <BaseModal :width="width" :height="height" :visiblity="visiblity" @toggle-visiblity="viewHandler">
-    <form class="login-form" @submit.prevent="handleRequestLogin">
+    <form class="login-form" @submit.prevent="requestLogin">
       <h2>로그인</h2>
       <div>
-        <LoginInput id="loginEmail" type="text" placeholder="아이디" :value="emailValue" :handler="inputValueHandler" />
+        <LoginInput
+          id="loginEmail"
+          type="email"
+          placeholder="아이디"
+          :value="loginEmail"
+          :handler="loginInputsHandler"
+        />
       </div>
       <div>
         <LoginInput
           id="loginPassword"
           type="password"
           placeholder="비밀번호"
-          :value="passwordValue"
-          :handler="inputValueHandler"
+          :value="loginPassword"
+          :handler="loginInputsHandler"
         />
       </div>
       <BaseButton
@@ -28,25 +34,32 @@
   </BaseModal>
 </template>
 <script setup>
-import { toRefs } from "vue";
+import { reactive, toRefs } from "vue";
 import { PALETTE } from "../../../../palette";
 import BaseModal from "../../../BaseModal/BaseModal.vue";
 import BaseButton from "../../../BaseButton/BaseButton.vue";
 import LoginInput from "../LoginInput/LoginInput.vue";
+import { useUserStore } from "../../../../stores/user";
+
+const userStore = useUserStore();
 
 const props = defineProps({
   visiblity: { type: Boolean, required: true },
   width: { type: String, required: true },
   height: { type: String, required: true },
   viewHandler: { type: Function, required: true },
-  emailValue: { type: String, required: true },
-  passwordValue: { type: String, required: true },
-  handleRequestLogin: { type: Function, required: true },
-  inputValueHandler: { type: Function, required: true }
+  requestLogin: { type: Function, required: true }
 });
-const { visiblity, width, height, viewHandler, emailValue, passwordValue, handleRequestLogin, inputValueHandler } =
-  toRefs(props);
+
+const { visiblity, width, height, viewHandler, requestLogin } = toRefs(props);
 const { MAIN_BLUE } = PALETTE;
+
+const loginValues = reactive({ loginEmail: "", loginPassword: "" });
+const { loginEmail, loginPassword } = toRefs(loginValues);
+
+const loginInputsHandler = (e) => {
+  loginValues[e.target.id] = e.target.value;
+};
 </script>
 <style lang="scss">
 @import "./LoginModal.scss";

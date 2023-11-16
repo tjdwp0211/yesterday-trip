@@ -1,7 +1,7 @@
 <template>
   <header>
     <!-- <img src="/logo.png" width="144" height="48" /> -->
-    <svg width="72" height="72" @click="() => router.push('/')">
+    <svg width="72" height="72" @click="logoClick">
       <circle cx="36" cy="36" r="100" :fill="MAIN_BLUE" />
     </svg>
     <form
@@ -38,7 +38,7 @@
       <div
         v-if="viewStateBasket.selectBoxs || viewStateBasket.searchInput"
         class="overlay"
-        @click.stop="closeUserInteraction"
+        @click.stop="initInteractionState"
       ></div>
     </form>
 
@@ -52,15 +52,17 @@
         :color="MAIN_GRAY"
       >
         <img src="../../assets/imgs/bars.svg" width="20" height="20" />
-        <img id="user-img" src="../../assets/imgs/unknowen-user.svg" width="32" height="32" />
+        <img v-if="!userStore.state" id="user-img" src="../../assets/imgs/unknowen-user.svg" width="32" height="32" />
+        <p class="user-icon" v-else>{{ userStore.getter.nickname().value.slice(0, 1).toUpperCase() }}</p>
         <DropBox
           width="120px"
           height="96px"
           :drop-box-view="viewStateBasket.dropBox"
           :drop-box-view-handler="() => viewStateBasketHandler('dropBox')"
         >
-          <a class="modal-opener" @click="() => viewStateBasketHandler('login')">로그인</a>
-          <a class="modal-opener" @click="() => viewStateBasketHandler('join')">회원가입</a>
+          <a v-if="!userStore.state" class="modal-opener" @click="() => viewStateBasketHandler('login')">로그인</a>
+          <a v-if="!userStore.state" class="modal-opener" @click="() => viewStateBasketHandler('join')">회원가입</a>
+          <a v-else class="modal-opener" @click="logOut">로그아웃</a>
         </DropBox>
       </BaseButton>
     </div>
@@ -68,28 +70,21 @@
   <LoginModal
     width="568px"
     height="412px"
-    :handle-request-login="handleRequestLogin"
     :visiblity="viewStateBasket.login"
     :view-handler="() => viewStateBasketHandler('login')"
-    :email-value="loginEmail"
-    :password-value="loginPassword"
-    :input-value-handler="login"
+    :request-login="handleRequestLogin"
   ></LoginModal>
   <JoinModal
     width="568px"
     height="520px"
-    :handle-request-join="handleRequestJoin"
     :visiblity="viewStateBasket.join"
     :view-handler="() => viewStateBasketHandler('join')"
-    :email-value="joinEmail"
-    :password-value="joinPassword"
-    :nickname-value="joinNickname"
-    :input-value-handler="join"
+    :request-login="handleRequestJoin"
   ></JoinModal>
 </template>
 
 <script setup>
-import { ref, reactive, toRefs } from "vue";
+import { ref, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { PALETTE } from "../../palette.js";
 import DropBox from "./Subs/DropBox/DropBox.vue";
@@ -98,22 +93,20 @@ import JoinModal from "./Subs/JoinModal/JoinModal.vue";
 import LoginModal from "./Subs/LoginModal/LoginModal.vue";
 import SelectBoxs from "./Subs/SelectBoxs/SelectBoxs.vue";
 import SearchInput from "../TheSearchInput/TheSearchInput.vue";
-import { requestLogin, requestJoin } from "../../api/account/index.js";
 import { requsetAttractionByKeyword, requsetAttractionByCodes } from "../../api/attraction";
 import { useAttrectionStore } from "../../stores/attraction";
+import { useUserStore } from "../../stores/user";
+import { requestJoin, requestLogin } from "../../api/account";
+import { jwtDecode } from "jwt-decode";
 
 const route = useRoute();
 const router = useRouter();
+const userStore = useUserStore();
 const attractionStore = useAttrectionStore();
 
 const { MAIN_BLUE, MAIN_GRAY } = PALETTE;
 const searchValue = ref("");
 const viewStateBasket = reactive({ dropBox: false, login: false, join: false, selectBoxs: false, searchInput: false });
-
-const loginValues = reactive({ loginEmail: "", loginPassword: "" });
-const joinValues = reactive({ joinEmail: "", joinPassword: "", joinNickname: "" });
-const { loginEmail, loginPassword } = toRefs(loginValues);
-const { joinEmail, joinPassword, joinNickname } = toRefs(joinValues);
 
 const sidoStates = reactive({ placeholder: "지역을 골라주세요", visible: false, areaCode: null, items: null });
 const gunGuStates = reactive({ placeholder: "자세한 지역도 알려주세요", visible: false, areaCode: null, items: null });
@@ -123,6 +116,16 @@ const contentTypeStates = reactive({
   areaCode: null,
   items: null
 });
+
+const logoClick = () => {
+  router.push("/");
+};
+
+const logOut = () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  userStore.action.clearState();
+};
 
 const viewStateBasketHandler = (paramsKey) => {
   if (paramsKey == "selectBoxs" || paramsKey == "searchInput") {
@@ -147,37 +150,33 @@ const viewStateBasketHandler = (paramsKey) => {
   viewStateBasket[paramsKey] = !viewStateBasket[paramsKey];
 };
 
-const closeUserInteraction = () => {
-  viewStateBasket.selectBoxs = false;
+const initSearchState = () => {
   viewStateBasket.searchInput = false;
+  searchValue.value = "";
 };
 
-const { search, login, join } = {
+const initSelectBoxsState = () => {
+  viewStateBasket.selectBoxs = false;
+  const initPlaceholders = ["지역을 골라주세요", "자세한 지역도 알려주세요", "무엇을 찾고 계신가요"];
+
+  viewStateBasket.selectBoxs = false;
+  [sidoStates, gunGuStates, contentTypeStates].forEach((state, idx) => {
+    state.placeholder = initPlaceholders[idx];
+    state.visible = false;
+    state.areaCode = null;
+    state.items = null;
+  });
+};
+
+const initInteractionState = () => {
+  initSearchState();
+  initSelectBoxsState();
+};
+
+const { search } = {
   search(e) {
     searchValue.value = e.target.value;
-  },
-  login(e) {
-    loginValues[e.target.id] = e.target.value;
-  },
-  join(e) {
-    joinValues[e.target.id] = e.target.value;
   }
-};
-
-const handleRequestJoin = async () => {
-  await requestJoin({ email: joinEmail.value, password: joinPassword.value, nickname: joinNickname.value }).then(
-    (res) => {
-      console.log("res.data :", res.data);
-      res.data;
-    }
-  );
-};
-
-const handleRequestLogin = async () => {
-  await requestLogin({ principal: loginEmail.value, credentials: loginPassword.value }).then((res) => {
-    console.log("res.data :", res.data);
-    res.data;
-  });
 };
 
 const handleAttractionRequest = async () => {
@@ -187,7 +186,10 @@ const handleAttractionRequest = async () => {
   if (viewStateBasket.searchInput && searchValue.value) {
     const res = await requsetAttractionByKeyword({ keyword: searchValue.value }).then((res) => res.data);
     attractionStore.action.setState(res);
-  } else if (sidoStates.areaCode && contentTypeStates.areaCode) {
+
+    return initSearchState();
+  }
+  if (sidoStates.areaCode && contentTypeStates.areaCode) {
     const codesBody = {
       sido: sidoStates.areaCode,
       gugun: gunGuStates.areaCode,
@@ -195,8 +197,39 @@ const handleAttractionRequest = async () => {
     };
     const res = await requsetAttractionByCodes(codesBody).then((res) => res.data);
     attractionStore.action.setState(res);
+
+    return initSelectBoxsState();
   }
-  closeUserInteraction();
+};
+
+const handleRequestLogin = async () => {
+  try {
+    const token = await requestLogin({ principal: loginEmail.value, credentials: loginPassword.value }).then((res) => {
+      console.log("res.data :", res.data);
+      return res.data.apiToken;
+    });
+    localStorage.setItem("accessToken", token);
+    localStorage.setItem("refreshToken ", token);
+
+    const decoded = jwtDecode(token);
+    userStore.action.setState(decoded);
+
+    viewStateBasketHandler("login");
+  } catch (err) {
+    alert("알 수 없는 에러가 발생하였습니다.");
+  }
+};
+
+const handleRequestJoin = async () => {
+  try {
+    await requestJoin({ email: joinEmail.value, password: joinPassword.value, nickname: joinNickname.value }).then(
+      (res) => res.data
+    );
+
+    viewStateBasketHandler("join");
+  } catch (err) {
+    alert("알 수 없는 에러가 발생하였습니다.");
+  }
 };
 </script>
 

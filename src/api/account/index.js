@@ -1,21 +1,17 @@
-import { instance } from "..";
+import { axoisForJSON } from "..";
 
 export async function checkEmail(email) {
-  console.log("IN API email :", email);
-  return await instance.get(`/account/check/email/${email}`);
+  return await axoisForJSON.get(`/account/check/email/${email}`);
 }
 
 export async function checkNickname(nickname) {
-  return await instance.get(`/account/check/nickname/${nickname}`);
+  return await axoisForJSON.get(`/account/check/nickname/${nickname}`);
 }
 
 export async function requestJoin({ email, password, nickname }) {
-  console.log("email :", email);
-  console.log("password :", password);
-  console.log("nickname :", nickname);
-  return await instance.post(`/account/join`, { email: email, password: password, nickname: nickname });
+  return await axoisForJSON.post(`/account/join`, { email: email, password: password, nickname: nickname });
 }
 
-export async function requestLogin({ email, password }) {
-  return await instance.post(`/auth`, { principal: email, credentials: password });
+export async function requestLogin({ principal, credentials }) {
+  return await axoisForJSON.post(`/auth`, { principal: principal, credentials: credentials });
 }

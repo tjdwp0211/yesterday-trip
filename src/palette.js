@@ -1,5 +1,6 @@
 export const PALETTE = {
   MAIN_BLUE: "var(--main-blue)",
+  MAIN_RED: "var(--main-red)",
   MAIN_BLACK: "var(--main-black)",
   SUB_BLACK: "var(--sub-black)",
   LIGHT_BLACK: "var(--light-black)",

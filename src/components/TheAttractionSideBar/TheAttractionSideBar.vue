@@ -1,7 +1,7 @@
 <template>
   <TheReviewSideBar
     :view="reviewStates.visible"
-    :positionLeft="340"
+    :positionLeft="384"
     @viewHandler="handlers.reviewVisible"
   ></TheReviewSideBar>
   <aside
@@ -19,7 +19,7 @@
         backgroundColor="white"
         :eventHandler="handlers.cardVisible"
         :sortCenter="true"
-        v-if="!reviewStates.visible"
+        v-if="!route.params.contentId"
       >
         <img src="../../assets/imgs/arrow-right.svg" v-if="!attractionStates.visible" width="12" height="12" />
         <img src="../../assets/imgs/arrow-left.svg" v-else width="12" height="12" />
@@ -33,13 +33,11 @@
         >
           <p class="side-card-title">{{ item.title }}</p>
           <p class="side-card-address">{{ item.address }}</p>
-          <!-- address -->
           <p class="side-card-star-point">
             <img src="../../assets/imgs/star.svg" width="14" height="14" />{{ item.starPoint }}
           </p>
           <p class="side-card-review-count">리뷰({{ item.tel.length + 900 }})</p>
           <img class="side-card-img" v-if="item.imageUrl" :src="item.imageUrl" />
-          <!-- imageUrl -->
         </TheAttractionCard>
       </ul>
     </div>
@@ -52,7 +50,9 @@ import { PALETTE } from "../../palette";
 import Button from "../BaseButton/BaseButton.vue";
 import TheAttractionCard from "./Subs/TheAttractionCard/TheAttractionCard.vue";
 import TheReviewSideBar from "../TheReviewSideBar/TheReviewSideBar.vue";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const props = defineProps({
   attractionItems: { type: Object, required: true },
   positionLeft: { type: Number, required: true }

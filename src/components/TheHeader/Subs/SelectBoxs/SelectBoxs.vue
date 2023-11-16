@@ -72,6 +72,17 @@ onMounted(async () => {
 });
 
 watch(
+  () => sidoStates.value.items,
+  async () => {
+    if (!sidoStates.value.items) {
+      const [sidoItems, contentTypeItems] = await Promise.all([requsetSido(), requsetContentType()]);
+      sidoStates.value.items = sidoItems.data;
+      contentTypeStates.value.items = contentTypeItems.data;
+    }
+  }
+);
+
+watch(
   () => sidoStates.value.areaCode,
   async () => {
     if (gunGuStates.value.items) {

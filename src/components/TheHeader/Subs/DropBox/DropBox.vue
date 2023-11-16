@@ -1,5 +1,5 @@
 <template>
-  <div class="drop-box-wrapper" :style="{ width: width, height: height }" @keydown.esc="handler" v-show="view">
+  <div class="drop-box-wrapper" :style="{ width: width }" @keydown.esc="handler" v-show="view">
     <slot></slot>
   </div>
 </template>

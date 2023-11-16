@@ -44,7 +44,6 @@ const handleFocus = () => {
 };
 
 const handleBlur = () => {
-  console.log("ON BLUR value.value :", value.value);
   if (!value.value) {
     isFocused.value = false;
     animationBoarderState.width = 0;

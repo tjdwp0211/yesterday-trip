@@ -1,23 +1,25 @@
 <template>
   <BaseModal :width="width" :height="height" :visiblity="visiblity" @toggle-visiblity="viewHandler">
-    <form class="join-form" @submit.prevent="handleRequestJoin">
+    <form class="join-form" @submit.prevent="requestLogin">
       <h2>회원가입</h2>
       <div>
-        <p class="already-exist">이미 가입된 이메일입니다</p>
-        <LoginInput id="joinEmail" type="email" placeholder="이메일" :value="emailValue" :handler="handleEmailChange" />
+        <p :style="{ visibility: alreadyExistEmail ? 'visible' : 'hidden' }" class="already-exist-email">
+          이미 가입된 이메일입니다
+        </p>
+        <LoginInput id="joinEmail" type="email" placeholder="이메일" :value="joinEmail" :handler="handleEmailChange" />
       </div>
       <LoginInput
         id="joinPassword"
         type="password"
         placeholder="비밀번호"
-        :value="passwordValue"
+        :value="joinPassword"
         :handler="handleEmailChange"
       />
       <LoginInput
         id="joinNickname"
         type="text"
         placeholder="닉네임"
-        :value="nicknameValue"
+        :value="joinNickname"
         :handler="handleEmailChange"
       />
       <BaseButton
@@ -34,7 +36,7 @@
   </BaseModal>
 </template>
 <script setup>
-import { ref, toRefs } from "vue";
+import { reactive, ref, toRefs } from "vue";
 import { PALETTE } from "../../../../palette";
 import BaseModal from "../../../BaseModal/BaseModal.vue";
 import BaseButton from "../../../BaseButton/BaseButton.vue";
@@ -46,25 +48,18 @@ const props = defineProps({
   width: { type: String, required: true },
   height: { type: String, required: true },
   viewHandler: { type: Function, required: true },
-  emailValue: { type: String, required: true },
-  passwordValue: { type: String, required: true },
-  nicknameValue: { type: String, required: true },
-  handleRequestJoin: { type: Function, required: true },
-  inputValueHandler: { type: Function, required: true }
+  requestLogin: { type: Function, required: true }
 });
 
-const {
-  visiblity,
-  width,
-  height,
-  viewHandler,
-  emailValue,
-  passwordValue,
-  nicknameValue,
-  handleRequestJoin,
-  inputValueHandler
-} = toRefs(props);
+const { visiblity, width, height, viewHandler, requestLogin } = toRefs(props);
 const { MAIN_BLUE } = PALETTE;
+
+const joinValues = reactive({ joinEmail: "", joinPassword: "", joinNickname: "" });
+const { joinEmail, joinPassword, joinNickname } = toRefs(joinValues);
+
+const joinInputsHandler = (e) => {
+  joinValues[e.target.id] = e.target.value;
+};
 
 const alreadyExistEmail = ref(false);
 let timer = null;
@@ -72,8 +67,8 @@ const handleCheckEmail = () => {
   if (timer) clearTimeout(timer);
 
   timer = setTimeout(async () => {
-    if (emailValue.value) {
-      await checkEmail(emailValue.value).then((res) => {
+    if (joinEmail.value) {
+      await checkEmail(joinEmail.value).then((res) => {
         alreadyExistEmail.value = res.data;
         console.log("이메일 중복 API THEN :", alreadyExistEmail.value);
       });
@@ -82,9 +77,9 @@ const handleCheckEmail = () => {
 };
 
 const handleEmailChange = (e) => {
-  inputValueHandler.value(e);
+  joinInputsHandler(e);
 
-  if (e.target.id == "joinEmail" && emailValue.value) {
+  if (e.target.id == "joinEmail" && joinEmail.value) {
     handleCheckEmail();
   }
 };

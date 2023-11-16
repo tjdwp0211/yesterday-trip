@@ -42,11 +42,14 @@
 }
 
 .review-card-imgs-wrapper {
-  width: 90%;
+  width: 100%;
   display: flex;
   & > img {
-    width: 100%;
-    aspect-ratio: 9 / 16;
+    width: 50%;
+    // aspect-ratio: auto 340 / 180;
+    aspect-ratio: 0.8;
     border: 1px solid black;
+    object-fit: cover;
   }
+  gap: 12px;
 }
