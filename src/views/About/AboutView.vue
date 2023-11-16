@@ -1,12 +1,17 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
     <TheReviewForm></TheReviewForm>
+    <TheReviewCard></TheReviewCard>
   </div>
 </template>
 
 <script setup>
+import TheReviewCard from "../../components/TheReviewSideBar/Subs/TheReviewCard/TheReviewCard.vue";
 import TheReviewForm from "../../components/TheReviewSideBar/Subs/TheReviewForm/TheReviewForm.vue";
 </script>
 
-<style></style>
+<style lang="scss">
+.about {
+  width: 340px;
+}
+</style>

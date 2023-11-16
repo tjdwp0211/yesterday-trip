@@ -4,7 +4,7 @@
     <section class="file-wrapper">
       <div class="imgs-basket">
         <!-- <img v-for="file in reviewState.files" :src="file" /> -->
-        <div v-for="file in reviewState.files">{{ file.decodingURL }}</div>
+        <div v-for="(file, index) in reviewState.files" :key="index">{{ file.decodingURL }}</div>
       </div>
       <label class="file-label" for="file"
         ><img src="../../../../assets/imgs/image.svg" width="48" height="48"

@@ -6,7 +6,6 @@
       v-if="route.params.contentId && detailContent.detail"
     >
       <div class="review-side-bar-container" v-if="route.params.contentId || detailContent.view">
-        <!-- <div class="item-details-wrapper"> -->
         <h2>{{ detailContent.detail.title }}</h2>
         <Button
           class="review-side-bar-closer"
@@ -25,7 +24,6 @@
             v-if="route.params.contentId || detailContent.view"
           />
         </Button>
-        <!-- </div> -->
         <article class="item-details-container"></article>
         <TheReviewForm></TheReviewForm>
         <section class="review-cards-wrapper">
