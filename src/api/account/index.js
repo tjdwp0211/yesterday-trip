@@ -15,3 +15,7 @@ export async function requestJoin({ email, password, nickname }) {
 export async function requestLogin({ principal, credentials }) {
   return await axoisForJSON.post(`/auth`, { principal: principal, credentials: credentials });
 }
+
+export async function requestLogOut() {
+  return await axoisForJSON.get(`/auth/logout`);
+}

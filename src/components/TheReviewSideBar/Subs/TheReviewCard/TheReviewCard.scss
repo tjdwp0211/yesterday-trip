@@ -1,11 +1,12 @@
 .review-card-wrapper {
   width: 100%;
   height: fit-content;
-  border: 1px solid red;
   border-bottom: 1px solid var(--main-gray);
   z-index: 1;
   display: flex;
   justify-content: center;
+  padding: 8px;
+  box-shadow: 0px 0px 3px var(--sub-gray);
 }
 
 .review-card-container {
@@ -14,17 +15,15 @@
   // display: flex;
   // flex-direction: column;
   // align-items: center;
-  .texts-wrapper {
-    p:nth-of-type(1) {
-      height: 32px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+  p:nth-of-type(1) {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .review-card-user-nickname {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
   }
   .review-card-user-emotion {
@@ -32,12 +31,16 @@
     border: 1px solid var(--main-blue);
     border-radius: 12px;
     padding: 4px;
-    font-size: 12px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
   }
   .review-card-create-time {
+    color: var(--light-black);
     font-size: 14px;
   }
   .review-card-user-content {
+    color: var(--sub-black);
   }
 }
 
@@ -48,8 +51,9 @@
     width: 50%;
     // aspect-ratio: auto 340 / 180;
     aspect-ratio: 0.8;
-    border: 1px solid black;
+    border-radius: 6px;
     object-fit: cover;
   }
   gap: 12px;
+  box-shadow: 0px 0px 3px var(--sub-gray);
 }

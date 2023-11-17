@@ -96,7 +96,7 @@ import SearchInput from "../TheSearchInput/TheSearchInput.vue";
 import { requsetAttractionByKeyword, requsetAttractionByCodes } from "../../api/attraction";
 import { useAttrectionStore } from "../../stores/attraction";
 import { useUserStore } from "../../stores/user";
-import { requestJoin, requestLogin } from "../../api/account";
+import { requestJoin, requestLogin, requestLogOut } from "../../api/account";
 import { jwtDecode } from "jwt-decode";
 
 const route = useRoute();
@@ -121,10 +121,20 @@ const logoClick = () => {
   router.push("/");
 };
 
-const logOut = () => {
+const logOut = async () => {
+  console.log('localStorage.getItem("accessToken") :', localStorage.getItem("accessToken"));
+  // try {
+  await requestLogOut().then((res) => {
+    if (res.status === 200) {
+      console.log("hi :", res.data);
+    }
+  });
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
   userStore.action.clearState();
+  // } catch (err) {
+  //   alert("알 수 없는 에러가 발생하였습니다.");
+  // }
 };
 
 const viewStateBasketHandler = (paramsKey) => {
@@ -184,6 +194,7 @@ const handleAttractionRequest = async () => {
     return router.push("/map");
   }
   if (viewStateBasket.searchInput && searchValue.value) {
+    console.log("HI :");
     const res = await requsetAttractionByKeyword({ keyword: searchValue.value }).then((res) => res.data);
     attractionStore.action.setState(res);
 
@@ -195,6 +206,7 @@ const handleAttractionRequest = async () => {
       gugun: gunGuStates.areaCode,
       contentType: contentTypeStates.areaCode
     };
+    console.log("codesBody :", codesBody);
     const res = await requsetAttractionByCodes(codesBody).then((res) => res.data);
     attractionStore.action.setState(res);
 
@@ -204,15 +216,15 @@ const handleAttractionRequest = async () => {
 
 const handleRequestLogin = async () => {
   try {
-    const token = await requestLogin({ principal: loginEmail.value, credentials: loginPassword.value }).then((res) => {
-      console.log("res.data :", res.data);
-      return res.data.apiToken;
+    const res = await requestLogin({ principal: loginEmail.value, credentials: loginPassword.value }).then((res) => {
+      if (res.status === 200) {
+        localStorage.setItem("accessToken", res.data.apiToken);
+        localStorage.setItem("refreshToken", res.data.refreshToken);
+      }
+      return res.data;
     });
-    localStorage.setItem("accessToken", token);
-    localStorage.setItem("refreshToken ", token);
-
-    const decoded = jwtDecode(token);
-    userStore.action.setState(decoded);
+    const decodedAccese = jwtDecode(res.apiToken);
+    userStore.action.setState(decodedAccese);
 
     viewStateBasketHandler("login");
   } catch (err) {

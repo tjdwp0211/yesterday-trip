@@ -62,7 +62,6 @@ watch(
       const reviewList = await requestReviewList(detail.content.contentId).then((res) => res.data);
       reviewItems.value = reviewList;
     }
-    console.log("detail :", detail.content);
   }
 );
 

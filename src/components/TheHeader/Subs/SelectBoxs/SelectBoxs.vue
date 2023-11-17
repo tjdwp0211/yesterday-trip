@@ -85,12 +85,14 @@ watch(
 watch(
   () => sidoStates.value.areaCode,
   async () => {
-    if (gunGuStates.value.items) {
-      gunGuStates.value.placeholder = "지역이 바뀌었네요!";
-      gunGuStates.value.visible = true;
-      gunGuStates.value.areaCode = null;
+    if (sidoStates.value.areaCode) {
+      if (gunGuStates.value.items) {
+        gunGuStates.value.placeholder = "지역이 바뀌었네요!";
+        gunGuStates.value.visible = true;
+        gunGuStates.value.areaCode = null;
+      }
+      await requsetGuGUn(sidoStates.value.areaCode).then((res) => (gunGuStates.value.items = res.data));
     }
-    await requsetGuGUn(sidoStates.value.areaCode).then((res) => (gunGuStates.value.items = res.data));
   }
 );
 </script>
