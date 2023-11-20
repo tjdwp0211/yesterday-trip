@@ -2,6 +2,7 @@ import axios from "axios";
 
 const { VITE_END_POINT } = import.meta.env;
 
+const accessToken = localStorage.getItem("accessToken") && localStorage.getItem("accessToken");
 const instance = (contentType) => {
   return axios.create({
     baseURL: VITE_END_POINT,
@@ -15,8 +16,15 @@ const instance = (contentType) => {
 export const axoisForJSON = instance("application/json;charset=utf-8");
 export const axiosForMultipart = instance("multipart/form-data");
 
+axoisForJSON.interceptors.request.use(function (config) {
+  // Do something before request is sent
+  let token = localStorage.getItem("accessToken");
+  config.headers["Authorization"] = "Bearer " + token;
+  return config;
+});
+
 const setInterceptors = (axiosType) => {
-  axiosType.interceptors.response.use(
+  return axiosType.interceptors.response.use(
     function (response) {
       // Any status code that lie within the range of 2xx cause this function to trigger
       // Do something with response data

@@ -1,6 +1,14 @@
 import { axoisForJSON } from "..";
 
-export async function checkEmail(email) {
+export async function checkIsYourEmail(email) {
+  return await axoisForJSON.get(`/account/email/verification-request?email=${email}`);
+}
+
+export async function sendAuthCode({ email, authCode }) {
+  return await axoisForJSON.get(`/account/email/verification?email=${email}&authCode=${authCode}`);
+}
+
+export async function checkDuplicationEmail(email) {
   return await axoisForJSON.get(`/account/check/email/${email}`);
 }
 
@@ -18,4 +26,8 @@ export async function requestLogin({ principal, credentials }) {
 
 export async function requestLogOut() {
   return await axoisForJSON.get(`/auth/logout`);
+}
+
+export async function findPassword(email) {
+  return await axoisForJSON.get(`/account/find-pass?email=${email}`);
 }

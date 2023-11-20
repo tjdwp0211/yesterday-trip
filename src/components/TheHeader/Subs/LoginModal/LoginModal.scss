@@ -13,4 +13,21 @@
   & > div {
     width: 70%;
   }
+
+  & > div:nth-last-of-type(1) {
+    display: flex;
+    justify-content: center;
+    position: relative;
+
+    & > .find-password {
+      position: absolute;
+      bottom: 12px;
+      right: 0;
+      width: 114px;
+      font-size: 12px;
+      color: var(--sub-black);
+      justify-self: end;
+      cursor: pointer;
+    }
+  }
 }

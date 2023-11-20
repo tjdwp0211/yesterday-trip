@@ -20,6 +20,6 @@ const dummy = {
 
 <style lang="scss">
 .about {
-  width: 340px;
+  width: 384px;
 }
 </style>

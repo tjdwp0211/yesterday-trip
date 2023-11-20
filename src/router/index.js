@@ -3,24 +3,33 @@ import HomeView from "../views/Home/HomeView.vue";
 import MapView from "../views/Map/MapView.vue";
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.VIEW_BASE_URL),
   routes: [
     {
       path: "/",
-      name: "home",
+      redirect: "/home"
+    },
+    {
+      path: "/home",
+      name: "Home",
       component: HomeView
     },
     {
       path: "/map",
-      name: "map",
+      name: "Map",
       component: MapView,
       children: [
         {
           path: ":contentId",
-          name: "reviews",
+          name: "Reviews",
           component: MapView
         }
       ]
+    },
+    {
+      path: "/user/:userId",
+      name: "User",
+      component: () => import("../views/User/UserView.vue")
     },
     {
       path: "/about",
@@ -29,21 +38,6 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/About/AboutView.vue")
-    },
-    {
-      path: "/board",
-      name: "board",
-      component: () => import("../views/Board/BoardView.vue"),
-      children: [
-        {
-          path: "detail",
-          component: ""
-        },
-        {
-          path: "detail",
-          component: ""
-        }
-      ]
     }
   ]
 });

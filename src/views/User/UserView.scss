@@ -1,0 +1,15 @@
+#user-view-wrapper {
+  width: 100vw;
+  height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.user-info-container {
+  width: 508px;
+  height: 342px;
+  box-shadow: 0px 0px 5px var(--main-gray);
+  border-radius: 20px;
+  margin-bottom: 20%;
+}

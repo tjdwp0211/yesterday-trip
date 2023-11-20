@@ -18,9 +18,11 @@ header {
       width: 80px;
     }
   }
-  svg {
+  #logo {
     min-width: 72px;
     min-height: 72px;
+    border-radius: 50%;
+    background-color: var(--main-blue);
   }
   transition: height 0.3s ease;
 }

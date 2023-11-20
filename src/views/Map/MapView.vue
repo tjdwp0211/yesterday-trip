@@ -1,7 +1,7 @@
 <template>
   <main id="map-view-main">
     <TheMap :attractionItems="attractionStore.state"></TheMap>
-    <TheSide :attractionItems="attractionStore.state" :position-left="0"> </TheSide>
+    <TheSide v-if="attractionStore.state" :attractionItems="attractionStore.state" :position-left="0"> </TheSide>
   </main>
 </template>
 

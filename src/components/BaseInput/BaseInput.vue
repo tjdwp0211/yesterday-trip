@@ -6,6 +6,7 @@
     :value="value"
     @input="(e) => handleOnChange(e)"
     :required="required"
+    :maxlength="maxlength"
     autocomplete="off"
   />
 </template>
@@ -17,7 +18,8 @@ const props = defineProps({
   type: { type: String, required: true },
   placeholder: { type: String, required: false },
   value: { type: String, required: true },
-  required: { type: Boolean, required: false }
+  required: { type: Boolean, required: false },
+  maxlength: { type: Number, required: false }
 });
 
 const emit = defineEmits(["handle-change"]);

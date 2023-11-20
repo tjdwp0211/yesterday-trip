@@ -12,6 +12,18 @@
   }
   & > div {
     width: 70%;
+    .email-wrapper,
+    .auth-code-wrapper {
+      display: flex;
+      position: relative;
+      .send-email,
+      .send-code {
+        position: absolute;
+        top: 2px;
+        right: 0;
+        font-size: 12px;
+      }
+    }
   }
 }
 
@@ -19,4 +31,16 @@
   color: var(--main-red);
   margin-bottom: 8px;
   font-size: 12px;
+}
+
+.auth-code-wrapper {
+  align-items: center;
+  #auth-code {
+    display: inline-block;
+    width: 70%;
+    height: 32px;
+    border: 1px solid var(--main-gray);
+    border-radius: 12px;
+    padding: 0px 12px;
+  }
 }

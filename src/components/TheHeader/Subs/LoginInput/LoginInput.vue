@@ -1,6 +1,14 @@
 <template>
   <div class="input-wrapper">
-    <Input :id="id" :type="type" :value="value" @handle-change="handler" @focus="handleFocus" @blur="handleBlur" />
+    <Input
+      :id="id"
+      :type="type"
+      :value="value"
+      @handle-change="handler"
+      @focus="handleFocus"
+      @blur="handleBlur"
+      :maxlength="36"
+    />
     <div v-show="!isFocused" class="init-border"></div>
     <div class="animation-border" :style="{ width: animationBoarderState.width + '%' }"></div>
     <label
