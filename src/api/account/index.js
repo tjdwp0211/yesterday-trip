@@ -31,3 +31,7 @@ export async function requestLogOut() {
 export async function findPassword(email) {
   return await axoisForJSON.get(`/account/find-pass?email=${email}`);
 }
+
+export async function requestChangePassword(newPassword) {
+  return await axoisForJSON.post(`/account/change-pass`, { password: newPassword });
+}

@@ -7,16 +7,23 @@ export const useModalStore = defineStore("modal", () => {
   const action = {
     setLoginState() {
       state.login = !state.login;
+      state.join = false;
+      state.findPassword = false;
     },
     setJoinState() {
       state.join = !state.join;
+      state.login = false;
+      state.findPassword = false;
     },
-    setFindPassword() {
+    setFindPasswordState() {
       state.findPassword = !state.findPassword;
+      state.join = false;
+      state.login = false;
     },
     clearState() {
       state.login = false;
       state.join = false;
+      state.findPassword = false;
     }
   };
 

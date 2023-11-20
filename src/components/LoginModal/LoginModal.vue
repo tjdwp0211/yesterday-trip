@@ -36,21 +36,21 @@
         >
           로그인
         </BaseButton>
-        <div class="find-password">비밀번호를 잊으셨나요?</div>
+        <div class="find-password" @click="handleFindPasswordView">비밀번호를 잊으셨나요?</div>
       </div>
     </form>
   </BaseModal>
 </template>
 <script setup>
 import { reactive, toRefs } from "vue";
-import { PALETTE } from "../../../../palette";
-import BaseModal from "../../../BaseModal/BaseModal.vue";
-import BaseButton from "../../../BaseButton/BaseButton.vue";
+import { PALETTE } from "../../palette";
+import BaseModal from "../BaseModal/BaseModal.vue";
+import BaseButton from "../BaseButton/BaseButton.vue";
 import LoginInput from "../LoginInput/LoginInput.vue";
-import { useModalStore } from "../../../../stores/modal";
+import { useModalStore } from "../../stores/modal";
 import { jwtDecode } from "jwt-decode";
-import { requestLogin } from "../../../../api/account";
-import { useUserStore } from "../../../../stores/user";
+import { requestLogin } from "../../api/account";
+import { useUserStore } from "../../stores/user";
 
 const modalStore = useModalStore();
 const userStore = useUserStore();
@@ -66,6 +66,10 @@ const { MAIN_BLUE } = PALETTE;
 
 const valueHandler = (e) => {
   loginValues[e.target.id] = e.target.value;
+};
+
+const handleFindPasswordView = () => {
+  modalStore.action.setFindPasswordState();
 };
 
 const handleRequestLogin = async () => {

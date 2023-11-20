@@ -1,4 +1,5 @@
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const { VITE_END_POINT } = import.meta.env;
 
@@ -50,7 +51,8 @@ const setInterceptors = (axiosType) => {
           const originalRequest = config;
           const refreshToken = localStorage.getItem("refreshToken");
           // token refresh 요청
-          const { data } = await axiosType.post(
+
+          const { data } = await instance("application/json;charset=utf-8").post(
             `/auth/refreshToken`, // token refresh api
             {},
             { headers: { Authorization: `Bearer ${refreshToken}` } }

@@ -81,13 +81,13 @@
 </template>
 <script setup>
 import { reactive, ref, toRefs } from "vue";
-import { PALETTE } from "../../../../palette";
-import BaseModal from "../../../BaseModal/BaseModal.vue";
-import BaseButton from "../../../BaseButton/BaseButton.vue";
+import { PALETTE } from "../../palette";
+import BaseModal from "../BaseModal/BaseModal.vue";
+import BaseButton from "../BaseButton/BaseButton.vue";
 import LoginInput from "../LoginInput/LoginInput.vue";
-import { checkDuplicationEmail, requestJoin, checkIsYourEmail, sendAuthCode } from "../../../../api/account/index.js";
-import { useModalStore } from "../../../../stores/modal";
-import BaseInput from "../../../BaseInput/BaseInput.vue";
+import { checkDuplicationEmail, requestJoin, checkIsYourEmail, sendAuthCode } from "../../api/account/index.js";
+import { useModalStore } from "../../stores/modal";
+import BaseInput from "../BaseInput/BaseInput.vue";
 
 const modalStore = useModalStore();
 

@@ -26,8 +26,8 @@
 
 <script setup>
 import { defineProps, reactive, ref, toRefs } from "vue";
-import Input from "../../../BaseInput/BaseInput.vue";
-import { PALETTE } from "../../../../palette";
+import Input from "../BaseInput/BaseInput.vue";
+import { PALETTE } from "../../palette";
 
 const props = defineProps({
   id: { type: String, required: true },

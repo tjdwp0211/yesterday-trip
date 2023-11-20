@@ -67,13 +67,24 @@
           <a v-if="!userStore.state?.userKey" class="modal-opener" @click="modalStore.action.setLoginState">로그인</a>
           <a v-if="!userStore.state?.userKey" class="modal-opener" @click="modalStore.action.setJoinState">회원가입</a>
           <a v-if="userStore.state?.userKey" class="modal-opener" @click="logOut">로그아웃</a>
-          <RouterLink v-if="userStore.state?.userKey" to="/" class="modal-opener">내 정보 보기</RouterLink>
+          <RouterLink
+            v-if="userStore.state?.userKey"
+            @click="
+              () => {
+                console.log('test');
+              }
+            "
+            to="/user"
+            class="modal-opener"
+            >내 정보 보기</RouterLink
+          >
         </DropBox>
       </BaseButton>
+      <FindPassword width="568px" height="384px"></FindPassword>
+      <LoginModal width="568px" height="412px"></LoginModal>
+      <JoinModal width="568px" height="520px"></JoinModal>
     </div>
   </header>
-  <LoginModal width="568px" height="412px"></LoginModal>
-  <JoinModal width="568px" height="520px"></JoinModal>
 </template>
 
 <script setup>
@@ -82,8 +93,9 @@ import { useRoute, useRouter, RouterLink } from "vue-router";
 import { PALETTE } from "../../palette.js";
 import DropBox from "./Subs/DropBox/DropBox.vue";
 import BaseButton from "../BaseButton/BaseButton.vue";
-import JoinModal from "./Subs/JoinModal/JoinModal.vue";
-import LoginModal from "./Subs/LoginModal/LoginModal.vue";
+import LoginModal from "../LoginModal/LoginModal.vue";
+import JoinModal from "../JoinModal/JoinModal.vue";
+import FindPassword from "../FindPassword/FindPassword.vue";
 import SelectBoxs from "./Subs/SelectBoxs/SelectBoxs.vue";
 import SearchInput from "../TheSearchInput/TheSearchInput.vue";
 import { requsetAttractionByKeyword, requsetAttractionByCodes } from "../../api/attraction";
@@ -115,12 +127,12 @@ const logOut = async () => {
   try {
     await requestLogOut().then((res) => {
       console.log(`res.data :`, res.data);
-      // if (res.status === 200) {
-      alert("로그아웃 되었습니다");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      userStore.action.clearState();
-      // }
+      if (res.status === 200) {
+        alert("로그아웃 되었습니다");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        userStore.action.clearState();
+      }
     });
   } catch (err) {
     console.log(`err :`, err);

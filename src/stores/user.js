@@ -17,7 +17,6 @@ export const useUserStore = defineStore(
 
     const action = {
       setState(decodedToken) {
-        console.log(`decodedToken :`, decodedToken);
         state.email = decodedToken.email;
         state.exp = decodedToken.exp;
         state.iat = decodedToken.iat;
@@ -28,7 +27,6 @@ export const useUserStore = defineStore(
         state.STATE_IS_FILL = true;
       },
       clearState() {
-        console.log(`CLEAR STATE :`);
         state.email = null;
         state.exp = null;
         state.iat = null;
@@ -37,7 +35,6 @@ export const useUserStore = defineStore(
         state.roles = null;
         state.userKey = null;
         state.STATE_IS_FILL = false;
-        console.log(`state :`, state);
       }
     };
 

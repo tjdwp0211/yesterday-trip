@@ -1,14 +1,13 @@
 <template>
-  <Transition name="slide-fade" :duration="300" @after-enter="detail.view = !detail.view">
+  <Transition name="slide-fade" :duration="300" @after-enter="handleAttractionDetailView">
     <aside
-      :class="`review-side-bar-wrapper`"
+      class="review-side-bar-wrapper"
       :style="{ left: `${positionLeft}px` }"
-      v-if="route.params.contentId && detail.content"
+      v-if="route.params.contentId && attractionDetail.content"
     >
-      <!-- <div class="review-side-bar-container" v-if="route.params.contentId || detail.view"> -->
-      <div class="review-side-bar-container">
+      <div class="review-side-bar-container" v-if="route.params.contentId || attractionDetail.view">
         <article class="item-details-container">
-          <h2>{{ detail.content.title }}</h2>
+          <h2>{{ attractionDetail.content.title }}</h2>
           <Button
             class="review-side-bar-closer"
             type="button"
@@ -23,19 +22,23 @@
               src="../../assets/imgs/close.svg"
               width="12"
               height="12"
-              v-if="route.params.contentId || detail.view"
+              v-if="route.params.contentId || attractionDetail.view"
             />
           </Button>
           <p class="info-text">
             <img src="../../assets/imgs/star.svg" width="20" height="20" /><span>{{
-              !detail.content.avgScore ? "0.0" : detail.content.avgScore
+              !attractionDetail.content.avgScore ? "0.0" : attractionDetail.content.avgScore
             }}</span>
           </p>
           <p class="info-text">
-            <img src="../../assets/imgs/location.svg" width="12" height="12" /><span>{{ detail.content.address }}</span>
+            <img src="../../assets/imgs/location.svg" width="12" height="12" /><span>{{
+              attractionDetail.content.address
+            }}</span>
           </p>
           <p class="info-text">
-            <img src="../../assets/imgs/tel.svg" width="12" height="12" /><span>{{ detail.content.tel }}</span>
+            <img src="../../assets/imgs/tel.svg" width="12" height="12" /><span>{{
+              attractionDetail.content.tel
+            }}</span>
           </p>
         </article>
         <div class="write-review-wrapper">
@@ -50,7 +53,10 @@
             :sortCenter="true"
             >{{ willWriteReview ? "닫기" : "리뷰 쓰기" }}</Button
           >
-          <TheReviewForm :visible="willWriteReview" :content-id="`${detail.content.contentId}`"></TheReviewForm>
+          <TheReviewForm
+            :visible="willWriteReview"
+            :content-id="`${attractionDetail.content.contentId}`"
+          ></TheReviewForm>
         </div>
         <section class="review-cards-wrapper" v-if="reviewItems">
           <template v-for="item in reviewItems" :key="item.id">
@@ -97,9 +103,13 @@ const props = defineProps({
   positionLeft: { type: Number, required: true }
 });
 const { positionLeft } = toRefs(props);
-const detail = reactive({ view: false, content: {} });
+const attractionDetail = reactive({ view: false, content: {} });
 const reviewItems = ref([]);
 const willWriteReview = ref(false);
+
+const handleAttractionDetailView = () => {
+  attractionDetail.view = !attractionDetail.view;
+};
 
 const handleWillWriteReview = () => {
   if (userStore.state.STATE_IS_FILL) {
@@ -113,10 +123,10 @@ watch(
   () => route.params.contentId,
   async () => {
     if (route.params.contentId) {
-      detail.content = attractionStore.getter.one(route.params.contentId - 1).value;
-      const reviewList = await requestReviewList(detail.content.contentId).then((res) => res.data);
+      attractionDetail.content = attractionStore.getter.one(route.params.contentId - 1).value;
+      const reviewList = await requestReviewList(attractionDetail.content.contentId).then((res) => res.data);
       reviewItems.value = reviewList;
-      console.log("reviewItems :", detail.content);
+      console.log("reviewItems :", attractionDetail.content);
     }
     willWriteReview.value = false;
   }
@@ -124,12 +134,14 @@ watch(
 
 const closeRevieSideBar = () => {
   emit("viewHandler", false);
-  detail.view = false;
+  attractionDetail.view = false;
   router.push("/map");
 };
 
 onUnmounted(() => {
-  router.push("/map");
+  if (route.params.contentId) {
+    router.push("/map");
+  }
 });
 </script>
 
