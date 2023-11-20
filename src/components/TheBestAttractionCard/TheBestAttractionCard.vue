@@ -1,8 +1,8 @@
 <template>
   <article class="best-attraction-wrapper" :style="{ '--bg-image': `url(./dummy-${idx}.jpg)` }">
     <div class="best-attraction-container">
-      <p class="best-attraction-title">{{ item.title }}</p>
-      <p class="best-attraction-sub-title">{{ item.subTitle }}</p>
+      <p class="best-attraction-title">{{ item.name }}</p>
+      <!-- <p class="best-attraction-sub-title">{{ item.subTitle }}</p> -->
     </div>
   </article>
 </template>
@@ -12,7 +12,7 @@ import { ref, toRefs } from "vue";
 
 const props = defineProps({
   item: { type: Object, required: true },
-  idx: { type: String, required: true }
+  idx: { type: Number, required: true }
 });
 const { item, idx } = toRefs(props);
 </script>

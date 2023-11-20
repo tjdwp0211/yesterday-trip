@@ -1,7 +1,7 @@
 <template>
   <header>
     <!-- <img src="/logo.png" width="144" height="48" /> -->
-    <RouterLink :to="{ path: '/home', name: 'Home' }">
+    <RouterLink to="/home">
       <div id="logo"></div>
     </RouterLink>
     <form
@@ -64,19 +64,10 @@
           :drop-box-view="viewStateBasket.dropBox"
           :drop-box-view-handler="() => viewStateBasketHandler('dropBox')"
         >
-          <!-- <a v-if="!userStore.state?.userKey" class="modal-opener" @click="modalStore.action.setLoginState">로그인</a>
+          <a v-if="!userStore.state?.userKey" class="modal-opener" @click="modalStore.action.setLoginState">로그인</a>
           <a v-if="!userStore.state?.userKey" class="modal-opener" @click="modalStore.action.setJoinState">회원가입</a>
           <a v-if="userStore.state?.userKey" class="modal-opener" @click="logOut">로그아웃</a>
-          <RouterLink
-            :to="{ path: '/user', name: 'User', params: { userId: userStore.getter.userKey().value } }"
-            v-if="userStore.state?.userKey"
-            class="modal-opener"
-            >내 정보 보기</RouterLink
-          > -->
-          <a class="modal-opener" @click="modalStore.action.setLoginState">로그인</a>
-          <a class="modal-opener" @click="modalStore.action.setJoinState">회원가입</a>
-          <a class="modal-opener" @click="logOut">로그아웃</a>
-          <RouterLink to="/" class="modal-opener">내 정보 보기</RouterLink>
+          <RouterLink v-if="userStore.state?.userKey" to="/" class="modal-opener">내 정보 보기</RouterLink>
         </DropBox>
       </BaseButton>
     </div>
@@ -111,13 +102,13 @@ const { MAIN_BLUE, MAIN_GRAY } = PALETTE;
 const searchValue = ref("");
 const viewStateBasket = reactive({ dropBox: false, selectBoxs: false, searchInput: false });
 
-const sidoStates = reactive({ placeholder: "지역을 골라주세요", visible: false, areaCode: null, items: null });
-const gunGuStates = reactive({ placeholder: "자세한 지역도 알려주세요", visible: false, areaCode: null, items: null });
+const sidoStates = reactive({ placeholder: "지역을 골라주세요", visible: false, areaCode: null, items: [] });
+const gunGuStates = reactive({ placeholder: "자세한 지역도 알려주세요", visible: false, areaCode: null, items: [] });
 const contentTypeStates = reactive({
   placeholder: "무엇을 찾고 계신가요",
   visible: false,
   areaCode: null,
-  items: null
+  items: []
 });
 
 const logOut = async () => {
@@ -152,7 +143,7 @@ const viewStateBasketHandler = (paramsKey) => {
         state.placeholder = initPlaceholders[idx];
         state.visible = false;
         state.areaCode = null;
-        state.items = null;
+        state.items = [];
       });
     }
   }
@@ -165,7 +156,6 @@ const initSearchState = () => {
 };
 
 const initSelectBoxsState = () => {
-  viewStateBasket.selectBoxs = false;
   const initPlaceholders = ["지역을 골라주세요", "자세한 지역도 알려주세요", "무엇을 찾고 계신가요"];
 
   viewStateBasket.selectBoxs = false;
@@ -173,7 +163,7 @@ const initSelectBoxsState = () => {
     state.placeholder = initPlaceholders[idx];
     state.visible = false;
     state.areaCode = null;
-    state.items = null;
+    state.items = [];
   });
 };
 

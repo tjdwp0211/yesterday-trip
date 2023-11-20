@@ -8,6 +8,14 @@ export async function requsetAttractionByKeyword({ keyword }) {
   return await axoisForJSON.get(`/attraction/${keyword}`);
 }
 
+export async function requestBestAttraction() {
+  return await axoisForJSON.get(`/attraction/best`);
+}
+
+export async function requestBestAttractionBySido({ sido }) {
+  return await axoisForJSON.get(`/attraction/best/sido/${sido}`);
+}
+
 // 시도, 군구, 컨텐츠
 // /attraction/search?sido= & gugun= & contentType=
 

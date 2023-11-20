@@ -11,14 +11,17 @@ const { VITE_NAVER_MAP_CLIENT_ID } = import.meta.env;
 
 const naverMapStore = useNaverMapStore();
 const attractionStore = useAttrectionStore();
-console.log("naverMapStore.state :", naverMapStore.state);
 
-const props = defineProps({ attractionItems: { type: Object, required: true } });
-const { attractionItems } = toRefs(props);
+// const props = defineProps({ attractionItems: { type: Object, required: true } });
+// const { attractionItems } = toRefs(props);
 const naverMap = ref(null);
-const markers = ref([]);
-const infoWindows = ref([]);
-const mapViews = reactive({ markers: [], infoWindows: [] });
+const mapViews = reactive({
+  markers: [],
+  infoWindows: [],
+  mapPositionY: 37.3595704,
+  mapPositionX: 127.105399,
+  zoom: 10
+});
 // mapViews로 바꾸고 재요청 시 배열 비우고, 다시 그리기 ^_____^
 
 const createMarker = (mapY, mapX, title) => {
@@ -52,14 +55,10 @@ const moveMapViewPort = (mapY, mapX) => {
 const initMap = () => {
   const container = document.getElementById("map");
   const options = {
-    center: new naver.maps.LatLng(37.3595704, 127.105399),
-    zoom: 10
+    center: new naver.maps.LatLng(mapViews.mapPositionY, mapViews.mapPositionX),
+    zoom: mapViews.zoom
   };
   naverMap.value = new naver.maps.Map(container, options);
-  // attractionItems.value?.forEach((spot, i) => {
-  //   markers.value.push(createMarker(spot.latitude, spot.longitude, spot.title));
-  //   infoWindows.value.push(createInfoWindow(spot.title));
-  // });
 };
 
 // address: "대전광역시 서구 둔산로73번길 21";
@@ -91,15 +90,43 @@ watch(
   () => attractionStore.state,
   () => {
     if (attractionStore.state) {
-      markers.value = attractionStore.getter.list().value.map((attraction, i) => {
-        return createMarker(attraction.latitude, attraction.longitude, attraction.title);
-      });
-      infoWindows.value = attractionStore.getter.list().value.map((attraction, i) => {
+      console.log("attractionStore.state :", attractionStore.state);
+
+      let center = {
+        mapY: 0,
+        mapX: 0
+      };
+      let zoomSize = {
+        minMapY: 0,
+        maxMapY: 0,
+        minMapX: 0,
+        maxMapX: 0
+      };
+      mapViews.markers.forEach((marker, i) => marker.setMap(null));
+      mapViews.infoWindows.forEach((infoWindow, i) => infoWindow.setMap(null));
+
+      mapViews.infoWindows = attractionStore.getter.list().value.map((attraction, i) => {
+        center.mapY += attraction.latitude;
+        center.mapX += attraction.longitude;
+        zoomSize.maxMapY = Math.max(zoomSize.maxMapY, attraction.latitude);
+        zoomSize.minMapY = Math.min(zoomSize.maxMapY, attraction.latitude);
+        zoomSize.maxMapX = Math.max(zoomSize.maxMapX, attraction.longitude);
+        zoomSize.minMapX = Math.min(zoomSize.maxMapX, attraction.longitude);
         return createInfoWindow(attraction.title);
       });
+      mapViews.markers = attractionStore.getter.list().value.map((attraction, i) => {
+        const marker = createMarker(attraction.latitude, attraction.longitude, attraction.title);
+        marker.addListener("click", () => viewInfoWindow(mapViews.infoWindows[i], marker));
+        return marker;
+      });
+      center.mapY = center.mapY / attractionStore.state.length;
+      center.mapX = center.mapX / attractionStore.state.length;
+      moveMapViewPort(center.mapY, center.mapX);
+      naverMap.value.morph([center.mapY, center.mapX], 12, true);
     }
-    console.log("IN MARKERS :", markers.value);
-    console.log("IN INFOWINDOWS :", infoWindows.value);
+    // console.log("attractionStore.state.length :", attractionStore.state.length);
+    // console.log("IN MARKERS :", mapViews.markers);
+    // console.log("IN INFOWINDOWS :", mapViews.infoWindows);
   }
 );
 </script>

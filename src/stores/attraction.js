@@ -2,14 +2,14 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 
 export const useAttrectionStore = defineStore("attraction", () => {
-  const state = ref(null);
+  const state = ref([]);
 
   const action = {
     setState(item) {
       state.value = item;
     },
     clearState() {
-      state.value = null;
+      state.value = [];
     }
   };
 

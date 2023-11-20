@@ -1,5 +1,10 @@
 <template>
-  <form class="review-form-wrapper" enctype="multipart/form-data" @submit.prevent="handleRequestCreateReview">
+  <form
+    class="review-form-wrapper"
+    enctype="multipart/form-data"
+    @submit.prevent="handleRequestCreateReview"
+    v-if="visible"
+  >
     <textarea class="content-area" :value="reviewState.content" @input="handler.content"></textarea>
     <BaseButton
       class="review-submit-btn"
@@ -32,9 +37,10 @@ import { requestCreateReview } from "../../../../api/review";
 import { PALETTE } from "../../../../palette";
 
 const props = defineProps({
-  contentId: { type: String }
+  contentId: { type: String, reqired: true },
+  visible: { type: Boolean, reqired: true }
 });
-const { contentId } = toRefs(props);
+const { contentId, visible } = toRefs(props);
 
 const reviewState = reactive({ content: "", files: [] });
 const { MAIN_BLUE } = PALETTE;

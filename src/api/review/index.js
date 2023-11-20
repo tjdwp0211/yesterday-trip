@@ -5,5 +5,7 @@ export async function requestReviewList(contentId) {
 }
 
 export async function requestCreateReview({ contentId, formData }) {
+  console.log("contentId :", contentId);
+  console.log("formData :", formData);
   return await axiosForMultipart.post(`/review/${contentId}`, formData);
 }

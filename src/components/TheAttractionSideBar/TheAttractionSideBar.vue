@@ -34,7 +34,9 @@
           <p class="side-card-title">{{ item.title }}</p>
           <p class="side-card-address">{{ item.address }}</p>
           <p class="side-card-star-point">
-            <img src="../../assets/imgs/star.svg" width="14" height="14" />{{ item.starPoint }}
+            <img src="../../assets/imgs/star.svg" width="14" height="14" /><span>{{
+              !item.avgScore ? "0.0" : item.avgScore
+            }}</span>
           </p>
           <p class="side-card-review-count">리뷰({{ item.tel.length + 900 }})</p>
           <img class="side-card-img" v-if="item.imageUrl" :src="item.imageUrl" />

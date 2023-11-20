@@ -8,7 +8,7 @@
           :height="26"
           @view-handler="(e) => handleView(e, sidoStates)"
           @area-code-handler="(e) => handleCode(e, sidoStates)"
-          :options-items="sidoStates.items && sidoStates.items"
+          :options-items="sidoStates.items"
         ></SelectBox
       ></Transition>
       <Transition name="bounce">
@@ -18,7 +18,7 @@
           :height="26"
           @view-handler="(e) => handleView(e, gunGuStates)"
           @area-code-handler="(e) => handleCode(e, gunGuStates)"
-          :options-items="gunGuStates.items && gunGuStates.items"
+          :options-items="gunGuStates.items"
         ></SelectBox
       ></Transition>
       <Transition name="bounce">
@@ -28,7 +28,7 @@
           :height="26"
           @view-handler="(e) => handleView(e, contentTypeStates)"
           @area-code-handler="(e) => handleCode(e, contentTypeStates)"
-          :options-items="contentTypeStates.items && contentTypeStates.items"
+          :options-items="contentTypeStates.items"
         ></SelectBox
       ></Transition>
     </div>
@@ -74,7 +74,7 @@ onMounted(async () => {
 watch(
   () => sidoStates.value.items,
   async () => {
-    if (!sidoStates.value.items) {
+    if (sidoStates.value.items.length === 0) {
       const [sidoItems, contentTypeItems] = await Promise.all([requsetSido(), requsetContentType()]);
       sidoStates.value.items = sidoItems.data;
       contentTypeStates.value.items = contentTypeItems.data;
@@ -86,7 +86,7 @@ watch(
   () => sidoStates.value.areaCode,
   async () => {
     if (sidoStates.value.areaCode) {
-      if (gunGuStates.value.items) {
+      if (gunGuStates.value.items.length !== 0) {
         gunGuStates.value.placeholder = "지역이 바뀌었네요!";
         gunGuStates.value.visible = true;
         gunGuStates.value.areaCode = null;
