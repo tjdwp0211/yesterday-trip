@@ -32,7 +32,7 @@ onMounted(async () => {
   const res = await requestBestAttraction().then((res) => res.data);
   bestAttractions.item = res;
   bestAttractions.isLoad = true;
-  console.log("HOME VIEW :");
+  console.log("HOME VIEW :", res);
 });
 </script>
 

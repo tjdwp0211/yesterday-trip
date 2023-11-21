@@ -6,7 +6,7 @@
   </Transition>
 </template>
 <script setup>
-import { defineProps, toRefs, Transition } from "vue";
+import { toRefs, Transition } from "vue";
 import BaseInput from "../BaseInput/BaseInput.vue";
 
 const props = defineProps({

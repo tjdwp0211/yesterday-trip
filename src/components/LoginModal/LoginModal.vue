@@ -76,7 +76,6 @@ const handleRequestLogin = async () => {
   try {
     const res = await requestLogin({ principal: loginValues.loginEmail, credentials: loginValues.loginPassword }).then(
       (res) => {
-        console.log(`res :`, res);
         if (res.status === 200) {
           localStorage.setItem("accessToken", res.data.apiToken);
           localStorage.setItem("refreshToken", res.data.refreshToken);

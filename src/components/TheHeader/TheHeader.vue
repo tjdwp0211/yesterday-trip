@@ -40,49 +40,62 @@
         @click.stop="initInteractionState"
       ></div>
     </form>
-    <div @focusin="() => viewStateBasketHandler('dropBox')" @focusout="() => viewStateBasketHandler('dropBox')">
-      <BaseButton
-        type="button"
-        width="80px"
-        height="48px"
-        background-color="white"
-        class="drop-box-opener"
-        :color="MAIN_GRAY"
-      >
-        <img src="../../assets/imgs/bars.svg" width="20" height="20" />
-        <img
-          v-if="!userStore.state?.userKey"
-          id="user-img"
-          src="../../assets/imgs/unknowen-user.svg"
-          width="32"
-          height="32"
-        />
-        <p class="user-icon" v-else>{{ userStore.getter.nickname()?.value.slice(0, 1).toUpperCase() }}</p>
-        <DropBox
-          width="120px"
-          height="96px"
-          :drop-box-view="viewStateBasket.dropBox"
-          :drop-box-view-handler="() => viewStateBasketHandler('dropBox')"
+    <div class="header-right-wrapper">
+      <a v-if="!userStore.state?.roles?.includes('ROLE_ADMIN')" class="to-follow" @click="handleToFollowPage">
+        여러 지역의 소식을 받아보세요
+      </a>
+      <a v-if="userStore.state?.roles?.includes('ROLE_ADMIN')" class="to-admin" @click="handleToAdminPage">
+        새로운 컨텐츠를 등록해주세요
+      </a>
+      <div @focusin="() => viewStateBasketHandler('dropBox')" @focusout="() => viewStateBasketHandler('dropBox')">
+        <BaseButton
+          type="button"
+          width="80px"
+          height="48px"
+          background-color="white"
+          class="drop-box-opener"
+          :color="MAIN_GRAY"
         >
-          <a v-if="!userStore.state?.userKey" class="modal-opener" @click="modalStore.action.setLoginState">로그인</a>
-          <a v-if="!userStore.state?.userKey" class="modal-opener" @click="modalStore.action.setJoinState">회원가입</a>
-          <a v-if="userStore.state?.userKey" class="modal-opener" @click="logOut">로그아웃</a>
-          <RouterLink
-            v-if="userStore.state?.userKey"
-            @click="
-              () => {
-                console.log('test');
-              }
-            "
-            to="/user"
-            class="modal-opener"
-            >내 정보 보기</RouterLink
+          <img src="../../assets/imgs/bars.svg" width="20" height="20" />
+          <img
+            v-if="!userStore.state?.userKey"
+            id="user-img"
+            src="../../assets/imgs/unknowen-user.svg"
+            width="32"
+            height="32"
+          />
+          <p class="user-icon" v-else>{{ userStore.getter.nickname()?.value.slice(0, 1).toUpperCase() }}</p>
+          <DropBox
+            width="120px"
+            height="96px"
+            :drop-box-view="viewStateBasket.dropBox"
+            :drop-box-view-handler="() => viewStateBasketHandler('dropBox')"
           >
-        </DropBox>
-      </BaseButton>
-      <FindPassword width="568px" height="384px"></FindPassword>
-      <LoginModal width="568px" height="412px"></LoginModal>
-      <JoinModal width="568px" height="520px"></JoinModal>
+            <a v-if="!userStore.state?.userKey" class="modal-opener" @click="modalStore.action.setLoginState">로그인</a>
+            <a v-if="!userStore.state?.userKey" class="modal-opener" @click="modalStore.action.setJoinState">
+              회원가입
+            </a>
+            <a v-if="userStore.state?.userKey" class="modal-opener" @click="logOut">로그아웃</a>
+            <a
+              v-if="userStore.state?.userKey"
+              @click="router.push({ path: '/user', name: 'User' })"
+              class="modal-opener"
+            >
+              내 정보 보기
+            </a>
+            <a
+              v-if="userStore.state?.roles?.includes('ROLE_ADMIN')"
+              @click="router.push({ path: '/admin', name: 'Admin' })"
+              class="modal-opener"
+            >
+              컨텐츠 등록하기
+            </a>
+          </DropBox>
+        </BaseButton>
+        <FindPassword width="568px" height="384px"></FindPassword>
+        <LoginModal width="568px" height="412px"></LoginModal>
+        <JoinModal width="568px" height="520px"></JoinModal>
+      </div>
     </div>
   </header>
 </template>
@@ -136,6 +149,21 @@ const logOut = async () => {
     });
   } catch (err) {
     console.log(`err :`, err);
+  }
+};
+
+const handleToFollowPage = () => {
+  if (userStore.state?.userKey) {
+    router.push("/follow");
+  } else {
+    alert("로그인을 먼저 해주세요");
+    modalStore.action.setLoginState();
+  }
+};
+
+const handleToAdminPage = () => {
+  if (userStore.state?.userKey) {
+    router.push("/admin");
   }
 };
 

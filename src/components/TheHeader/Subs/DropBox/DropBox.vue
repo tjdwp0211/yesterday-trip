@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { defineProps, toRefs } from "vue";
+import { toRefs } from "vue";
 const props = defineProps({
   dropBoxView: { type: Boolean, required: true },
   dropBoxViewHandler: { type: Function, required: true },

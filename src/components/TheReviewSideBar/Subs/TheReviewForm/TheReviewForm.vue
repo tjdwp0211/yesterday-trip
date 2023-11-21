@@ -2,7 +2,7 @@
   <form
     class="review-form-wrapper"
     enctype="multipart/form-data"
-    @submit.prevent="handleRequestCreateReview"
+    @submit.prevent="() => handleRequestCreateReview({ content: reviewState.content, files: reviewState.files })"
     v-if="visible"
   >
     <textarea class="content-area" :value="reviewState.content" @input="handler.content"></textarea>
@@ -33,14 +33,14 @@
 <script setup>
 import { reactive, toRefs } from "vue";
 import BaseButton from "../../../BaseButton/BaseButton.vue";
-import { requestCreateReview } from "../../../../api/review";
+
 import { PALETTE } from "../../../../palette";
 
 const props = defineProps({
-  contentId: { type: String, reqired: true },
-  visible: { type: Boolean, reqired: true }
+  visible: { type: Boolean, reqired: true },
+  handleRequestCreateReview: { type: Function, reqired: true }
 });
-const { contentId, visible } = toRefs(props);
+const { visible, handleRequestCreateReview } = toRefs(props);
 
 const reviewState = reactive({ content: "", files: [] });
 const { MAIN_BLUE } = PALETTE;
@@ -57,14 +57,6 @@ const handler = {
   content(e) {
     reviewState.content = e.target.value;
   }
-};
-
-const handleRequestCreateReview = async () => {
-  const formDataBasket = new FormData();
-  formDataBasket.set("content", reviewState.content);
-  formDataBasket.set("uploadImages", []);
-  reviewState.files.forEach((file, i) => formDataBasket.append("uploadImages", file.instance));
-  await requestCreateReview({ contentId: contentId.value, formData: formDataBasket }).then((res) => res.data);
 };
 </script>
 

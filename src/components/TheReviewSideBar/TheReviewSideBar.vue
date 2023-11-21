@@ -55,7 +55,7 @@
           >
           <TheReviewForm
             :visible="willWriteReview"
-            :content-id="`${attractionDetail.content.contentId}`"
+            :handle-request-create-review="handleRequestCreateReview"
           ></TheReviewForm>
         </div>
         <section class="review-cards-wrapper" v-if="reviewItems">
@@ -89,7 +89,7 @@ import Button from "../BaseButton/BaseButton.vue";
 import TheReviewForm from "./Subs/TheReviewForm/TheReviewForm.vue";
 import TheReviewCard from "./Subs/TheReviewCard/TheReviewCard.vue";
 import { useAttrectionStore } from "../../stores/attraction";
-import { requestReviewList } from "../../api/review";
+import { requestReviewList, requestCreateReview } from "../../api/review";
 import { useUserStore } from "../../stores/user";
 
 const route = useRoute();
@@ -117,6 +117,19 @@ const handleWillWriteReview = () => {
   } else {
     alert("리뷰를 쓰기 위해 로그인을 해주세요");
   }
+};
+
+const handleRequestCreateReview = async ({ content, files }) => {
+  const formDataBasket = new FormData();
+  formDataBasket.set("content", content);
+  formDataBasket.set("uploadImages", []);
+  files.forEach((file, i) => formDataBasket.append("uploadImages", file.instance));
+  await requestCreateReview({ contentId: attractionDetail.content.contentId, formData: formDataBasket }).then((res) => {
+    willWriteReview.value = false;
+  });
+
+  const newReviewList = await requestReviewList(attractionDetail.content.contentId).then((res) => res.data);
+  reviewItems.value = newReviewList;
 };
 
 watch(

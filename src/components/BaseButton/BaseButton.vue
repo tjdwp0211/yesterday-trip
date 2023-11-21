@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref, toRefs } from "vue";
+import { ref, toRefs } from "vue";
 
 const props = defineProps({
   type: { type: String, required: true },

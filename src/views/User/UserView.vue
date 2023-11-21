@@ -38,7 +38,7 @@
         <BaseButton
           class="submit-button"
           type="submit"
-          width="104px"
+          width="120px"
           height="36px"
           background-color="white"
           :color="PALETTE.MAIN_BLUE"

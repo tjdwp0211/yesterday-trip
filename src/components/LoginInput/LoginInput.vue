@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { defineProps, reactive, ref, toRefs } from "vue";
+import { reactive, ref, toRefs } from "vue";
 import Input from "../BaseInput/BaseInput.vue";
 import { PALETTE } from "../../palette";
 

@@ -1,0 +1,118 @@
+.follow-page-wrapper {
+  display: flex;
+  gap: 56px;
+  width: 100vw;
+  height: calc(100vh - 120px);
+
+  .alarm-list-wrapper {
+    width: 240px;
+    height: 100%;
+    overflow-y: scroll;
+
+    .alarm-card-wrapper {
+      width: 100%;
+      height: 88px;
+      padding: 12px;
+      border-bottom: 1px solid var(--main-gray);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      cursor: pointer;
+
+      & > h4 {
+        font-weight: 700;
+        span {
+          font-size: 12px;
+          color: var(--light-black);
+          margin-left: 8px;
+        }
+      }
+
+      & > p {
+        font-size: 12px;
+        color: var(--sub-black);
+      }
+    }
+  }
+
+  .area-cards-list-wrapper {
+    width: calc(100vw - 240px - 56px);
+    height: calc(100vh - 120px);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    flex-wrap: wrap;
+    padding: 24px 48px 24px 0px;
+    gap: 36px;
+    overflow-y: scroll;
+
+    @media (max-width: 1280px) {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+
+      @media (max-width: 1024px) {
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+      }
+    }
+
+    .area-card-wrapper {
+      width: 80%;
+      min-width: 266px;
+      aspect-ratio: 4 / 3;
+      align-self: center;
+      justify-self: center;
+      padding: 24px;
+      position: relative;
+      border-radius: 24px;
+
+      .heart-img {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        z-index: 2;
+        cursor: pointer;
+      }
+
+      .text-container {
+        position: relative;
+        & > h4 {
+          font-weight: 900;
+          font-size: 18px;
+          color: white;
+        }
+        z-index: 1;
+      }
+
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        border-radius: 24px;
+      }
+
+      &::before {
+        background: center / cover no-repeat var(--follow-background);
+      }
+
+      &::after {
+        background-color: var(--main-black);
+        opacity: 0.5;
+      }
+    }
+  }
+}
+
+// .slide-fade-enter-active {
+//   transition: transform 0.3s ease;
+// }
+
+// .slide-fade-enter-from,
+// .slide-fade-leave-to {
+//   transform: translateX(-100%);
+//   opacity: 0;
+// }

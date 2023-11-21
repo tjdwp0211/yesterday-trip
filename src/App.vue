@@ -4,20 +4,20 @@
 </template>
 
 <script setup>
-import { ref, onUpdated } from "vue";
+import { ref, onMounted } from "vue";
 import { RouterView } from "vue-router";
 import Header from "../src/components/TheHeader/TheHeader.vue";
 import { useUserStore } from "./stores/user";
+import { useAlarmStore } from "./stores/alarm";
 const userStore = useUserStore();
+const alarmStore = useAlarmStore();
 
 const sseBasket = ref(); // SSE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-onUpdated(
-  () => userStore,
-  () => {
-    console.log(`userStore :`, userStore);
-  }
-);
+// onMounted(async () => {
+//   await console.log("test :");
+// });
+
 // /**
 //  * SSE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //  */
