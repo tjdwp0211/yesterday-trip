@@ -43,6 +43,7 @@
     <div class="header-right-wrapper">
       <a v-if="!userStore.state?.roles?.includes('ROLE_ADMIN')" class="to-follow" @click="handleToFollowPage">
         여러 지역의 소식을 받아보세요
+        <span class="alram-count">{{ alarmStore.state.noneReadCount }}</span>
       </a>
       <a v-if="userStore.state?.roles?.includes('ROLE_ADMIN')" class="to-admin" @click="handleToAdminPage">
         새로운 컨텐츠를 등록해주세요
@@ -109,11 +110,13 @@ import { useAttrectionStore } from "../../stores/attraction";
 import { useUserStore } from "../../stores/user";
 import { useModalStore } from "../../stores/modal";
 import { requestLogOut } from "../../api/account";
+import { useAlarmStore } from "../../stores/alarm";
 
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 const modalStore = useModalStore();
+const alarmStore = useAlarmStore();
 const attractionStore = useAttrectionStore();
 
 const { MAIN_BLUE, MAIN_GRAY } = PALETTE;
@@ -132,12 +135,12 @@ const contentTypeStates = reactive({
 const logOut = async () => {
   try {
     await requestLogOut().then((res) => {
-      console.log(`res.data :`, res.data);
       if (res.status === 200) {
         alert("로그아웃 되었습니다");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         userStore.action.clearState();
+        alarmStore.action.clearState();
       }
     });
   } catch (err) {

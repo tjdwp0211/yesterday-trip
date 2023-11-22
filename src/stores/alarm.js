@@ -2,23 +2,48 @@ import { reactive, computed } from "vue";
 import { defineStore } from "pinia";
 
 export const useAlarmStore = defineStore("alarm", () => {
-  const state = reactive([]);
+  const state = reactive({ noneReadList: [], readList: [], lastAlramID: 0, noneReadCount: 0 });
 
   const action = {
-    setState(alarms) {
-      state = alarms;
+    setNoneReadAlramList(alarms) {
+      state.noneReadList = alarms;
+    },
+    setReadAlramList(alarms) {
+      state.readList = alarms;
+    },
+    setLastAlramID(id) {
+      state.lastAlramID = id;
+      state.noneReadCount += 1;
+    },
+    setNoneReadCount() {
+      noneReadCount += 1;
+    },
+    setListAndIDState(alarms, id) {
+      state.noneReadList = alarms;
+      state.lastAlramID = id;
     },
     clearState() {
-      state = [];
+      state.noneReadList = [];
+      state.lastAlramID = 0;
+      state.noneReadCount = 0;
     }
   };
 
   const getter = {
-    one(index) {
-      return computed(() => state[index]);
+    oneOfRead(index) {
+      return computed(() => state.readList[index]);
     },
-    list() {
-      return computed(() => state);
+    readList() {
+      return computed(() => state.readList);
+    },
+    oneOfNoneRead(index) {
+      return computed(() => state.noneReadList[index]);
+    },
+    noneReadList() {
+      return computed(() => state.noneReadList);
+    },
+    lastAlramID() {
+      return computed(() => state.lastAlramID);
     }
   };
 

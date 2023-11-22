@@ -15,7 +15,8 @@
 .cards-container {
   width: 100%;
   height: calc(100vh - 120px);
-  overflow-y: scroll;
+  overflow-y: auto;
+  box-shadow: 0px 0px 2px var(--light-black);
   padding: 0;
   z-index: 11;
 }

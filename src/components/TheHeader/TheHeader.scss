@@ -49,8 +49,26 @@ header {
   cursor: pointer;
   border-radius: 20px;
   padding: 12px;
+  border: 1px solid var(--sub-gray);
   &:hover {
     background-color: var(--sub-gray);
+  }
+}
+
+.to-follow {
+  position: relative;
+  .alram-count {
+    display: inline-block;
+    position: absolute;
+    top: -12px;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--main-red);
+    color: white;
+    text-align: center;
+    padding-top: 3px;
   }
 }
 

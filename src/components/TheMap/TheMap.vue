@@ -15,7 +15,7 @@ import { useNaverMapStore } from "../../stores/naverMap";
 import { useAttrectionStore } from "../../stores/attraction";
 import { useRouter } from "vue-router";
 import { useFormatContentType } from "../../utils/useFormatContentType";
-import { useMarkerClustering } from "../../utils/MarkerClustering";
+import { useMarkerClustering } from "../../utils/useMarkerClustering";
 
 const { VITE_NAVER_MAP_CLIENT_ID } = import.meta.env;
 
@@ -112,18 +112,18 @@ const initMap = () => {
   };
   naverMap.value = new naver.maps.Map(container, options);
   let timer;
-  naver.maps.Event.addListener(naverMap.value, "mousemove", (e) => {
-    if (timer) clearTimeout(timer);
+  // naver.maps.Event.addListener(naverMap.value, "mousemove", (e) => {
+  //   if (timer) clearTimeout(timer);
 
-    timer = setTimeout(() => {
-      const attractionList = attractionStore.getter.list().value;
-      console.log(
-        `CUR_ZOOM : ${naverMap.value.getZoom()}`,
-        `CALCED: ${Math.max(Math.abs(10 - naverMap.value.getZoom()), 2)}`
-      );
-      useMarkerClustering(attractionList || [], Math.max(Math.abs(7 - naverMap.value.getZoom()), 2));
-    }, 300);
-  });
+  //   timer = setTimeout(() => {
+  //     const attractionList = attractionStore.getter.list().value;
+  //     console.log(
+  //       `CUR_ZOOM : ${naverMap.value.getZoom()}`,
+  //       `CALCED: ${Math.max(Math.abs(10 - naverMap.value.getZoom()), 2)}`
+  //     );
+  //     useMarkerClustering(attractionList || [], Math.max(Math.abs(7 - naverMap.value.getZoom()), 2));
+  //   }, 300);
+  // });
 };
 
 onMounted(() => {
@@ -155,15 +155,15 @@ watch(
       mapViews.markers.forEach((marker, i) => marker.setMap(null));
       mapViews.infoWindows.forEach((infoWindow, i) => infoWindow.setMap(null));
 
-      mapViews.infoWindows = attractionStore.getter.list().value.map((attraction, i) => {
-        center.mapY += attraction.latitude;
-        center.mapX += attraction.longitude;
-        zoomSize.maxMapY = Math.max(zoomSize.maxMapY, attraction.latitude);
-        zoomSize.minMapY = Math.min(zoomSize.maxMapY, attraction.latitude);
-        zoomSize.maxMapX = Math.max(zoomSize.maxMapX, attraction.longitude);
-        zoomSize.minMapX = Math.min(zoomSize.maxMapX, attraction.longitude);
-        return createInfoWindow(attraction.title);
-      });
+      // mapViews.infoWindows = attractionStore.getter.list().value.map((attraction, i) => {
+      //   center.mapY += attraction.latitude;
+      //   center.mapX += attraction.longitude;
+      //   zoomSize.maxMapY = Math.max(zoomSize.maxMapY, attraction.latitude);
+      //   zoomSize.minMapY = Math.min(zoomSize.maxMapY, attraction.latitude);
+      //   zoomSize.maxMapX = Math.max(zoomSize.maxMapX, attraction.longitude);
+      //   zoomSize.minMapX = Math.min(zoomSize.maxMapX, attraction.longitude);
+      //   return createInfoWindow(attraction.title);
+      // });
 
       mapViews.markers = attractionStore.getter.list().value.map((attraction, i) => {
         const marker = createMarker(attraction.latitude, attraction.longitude, attraction);

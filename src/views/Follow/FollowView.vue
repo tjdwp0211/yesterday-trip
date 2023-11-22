@@ -1,14 +1,41 @@
 <template>
   <main class="follow-page-wrapper">
     <section class="alarm-list-wrapper">
-      <div v-for="(alarm, index) in 11" class="alarm-card-wrapper" :key="index">
-        <h4>대전<span>타입</span></h4>
-        <p>ㅇㅇㅇㅇ이 추가 되었습니다.</p>
+      <div
+        v-for="(alarm, index) in alarmStore.state.noneReadList"
+        class="alarm-card-wrapper none-read-mark"
+        :key="alarm.id"
+        @click="handleAlarmClick"
+      >
+        <span class="alarm-text-header">
+          <span class="main-text">
+            대전
+            <span>{{ useFormatContentType(alarm.contentTypeId).formatText }}</span>
+          </span>
+          <span class="time-diff">{{ useTimeGapFormat(alarm.createAt) }}</span>
+        </span>
+        <p>
+          {{ alarm.sidoName }}에 <span class="alarm-keyword">{{ alarm.keyword }}</span
+          >이 추가 되었습니다.
+        </p>
+      </div>
+      <div v-for="(alarm, index) in alarmStore.state.readList" class="alarm-card-wrapper" :key="alarm.id">
+        <span class="alarm-text-header">
+          <span class="main-text">
+            대전
+            <span>{{ useFormatContentType(alarm.contentTypeId).formatText }}</span>
+          </span>
+          <span class="time-diff">{{ useTimeGapFormat(alarm.createAt) }}</span>
+        </span>
+        <p>
+          {{ alarm.sidoName }}에 <span class="alarm-keyword">{{ alarm.keyword }}</span
+          >이 추가 되었습니다.
+        </p>
       </div>
     </section>
     <section class="area-cards-list-wrapper">
       <div
-        v-for="area in sidoFollowList.list"
+        v-for="area in listBasket.list"
         class="area-card-wrapper"
         :key="area.id"
         :style="{ '--follow-background': `url(./follow-${area.name && area.name}.jpg)` }"
@@ -36,36 +63,40 @@
 <script setup>
 import { reactive, onMounted } from "vue";
 import { requestFollowingForUser, requestUnFollowingTeamForUser, requestTeamListForUser } from "../../api/team";
+import { requestReadAlarmList, requestNoneReadAlarmList, requestReadAlarm } from "../../api/alarm";
+import { useAlarmStore } from "../../stores/alarm";
+import { useFormatContentType } from "../../utils/useFormatContentType";
+import { useTimeGapFormat } from "../../utils/useTimeGapFormat";
 
-const sidoFollowList = reactive({ list: [] });
+const alarmStore = useAlarmStore();
+const listBasket = reactive({ followList: [] });
 
 const handleFollowing = async ({ teamId, willFollowing }) => {
   if (willFollowing) {
     await requestFollowingForUser(teamId).then((res) => {
-      console.log("WILL FOLLOWING :", res.data);
       return res.data;
     });
   } else {
     await requestUnFollowingTeamForUser(teamId).then((res) => {
-      console.log("UN FOLLOWING :", res.data);
       return res.data;
     });
   }
-  sidoFollowList.list.forEach((sido, i) => {
+  listBasket.list.forEach((sido, i) => {
     if (sido.id === teamId) {
-      sidoFollowList.list[i].followed = !sidoFollowList.list[i].followed;
+      listBasket.list[i].followed = !listBasket.list[i].followed;
     }
   });
 };
 
 onMounted(async () => {
-  const list = await requestTeamListForUser().then((res) => {
-    console.log("REQUEST LIST :", res.data);
-    return res.data;
-  });
-
-  sidoFollowList.list = list;
-  console.log("sidoFollowList :", sidoFollowList);
+  const [followListRes, readAlarmRes, noneReadAlarmRes] = await Promise.all([
+    requestTeamListForUser(),
+    requestReadAlarmList(),
+    requestNoneReadAlarmList()
+  ]);
+  alarmStore.action.setReadAlramList(noneReadAlarmRes.data);
+  alarmStore.action.setNoneReadAlramList(readAlarmRes.data);
+  listBasket.followList = followListRes.data;
 });
 </script>
 
