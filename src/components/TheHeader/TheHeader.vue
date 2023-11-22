@@ -83,13 +83,6 @@
             >
               내 정보 보기
             </a>
-            <a
-              v-if="userStore.state?.roles?.includes('ROLE_ADMIN')"
-              @click="router.push({ path: '/admin', name: 'Admin' })"
-              class="modal-opener"
-            >
-              컨텐츠 등록하기
-            </a>
           </DropBox>
         </BaseButton>
         <FindPassword width="568px" height="384px"></FindPassword>

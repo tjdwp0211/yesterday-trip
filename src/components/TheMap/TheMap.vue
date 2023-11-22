@@ -1,5 +1,11 @@
 <template>
   <div id="map"></div>
+  <!-- <div >
+    <span></span>
+    <div>
+      <img src="" /><span></span>
+    </div>
+  </div> -->
 </template>
 
 <script setup>
@@ -7,10 +13,17 @@ import { ref, reactive, onMounted, toRefs, watch } from "vue";
 import { PALETTE } from "../../palette";
 import { useNaverMapStore } from "../../stores/naverMap";
 import { useAttrectionStore } from "../../stores/attraction";
+import { useRouter } from "vue-router";
+import { useFormatContentType } from "../../utils/useFormatContentType";
+import { useMarkerClustering } from "../../utils/MarkerClustering";
+
 const { VITE_NAVER_MAP_CLIENT_ID } = import.meta.env;
 
+const router = useRouter();
 const naverMapStore = useNaverMapStore();
 const attractionStore = useAttrectionStore();
+
+const newMapStates = reactive({ markers: [], infoWindows: [] });
 
 // const props = defineProps({ attractionItems: { type: Object, required: true } });
 // const { attractionItems } = toRefs(props);
@@ -22,13 +35,52 @@ const mapViews = reactive({
   mapPositionX: 127.105399,
   zoom: 10
 });
-// mapViews로 바꾸고 재요청 시 배열 비우고, 다시 그리기 ^_____^
 
-const createMarker = (mapY, mapX, title) => {
+const createMarkerComponent = (attraction) => {
+  const markerWrapper = document.createElement("div");
+  markerWrapper.className = "marker-wrapper";
+
+  const infosContainer = document.createElement("div");
+  infosContainer.className = "infos-container-wrapper";
+
+  const contentImg = document.createElement("span");
+  contentImg.className = `content-type-img ${useFormatContentType(attraction.contentTypeId).class}`;
+
+  const titleBasket = document.createElement("span");
+  titleBasket.className = "title-basket";
+  titleBasket.innerText = `${attraction.title.slice(0, 8)}..`;
+
+  const starPointWrapper = document.createElement("div");
+  starPointWrapper.className = "star-point-wrapper";
+  const starPointImg = document.createElement("span");
+  starPointImg.className = "star-point-img";
+  const startPointText = document.createElement("span");
+  startPointText.className = "star-point-text";
+  startPointText.innerText = `${attraction.avgScore}/10`;
+
+  starPointWrapper.appendChild(starPointImg);
+  starPointWrapper.appendChild(startPointText);
+
+  infosContainer.appendChild(titleBasket);
+  infosContainer.appendChild(starPointWrapper);
+  markerWrapper.appendChild(contentImg);
+  markerWrapper.appendChild(infosContainer);
+
+  return markerWrapper;
+};
+
+const createMarker = (mapY, mapX, attraction) => {
+  const markerComponent = createMarkerComponent(attraction);
+
   return new naver.maps.Marker({
     position: new naver.maps.LatLng(mapY, mapX),
-    title: title,
-    map: naverMap.value
+    title: attraction.title,
+    map: naverMap.value,
+    icon: {
+      content: markerComponent,
+      size: new naver.maps.Size(22, 35),
+      anchor: new naver.maps.Point(11, 35)
+    }
   });
 };
 
@@ -59,20 +111,20 @@ const initMap = () => {
     zoom: mapViews.zoom
   };
   naverMap.value = new naver.maps.Map(container, options);
-};
+  let timer;
+  naver.maps.Event.addListener(naverMap.value, "mousemove", (e) => {
+    if (timer) clearTimeout(timer);
 
-// address: "대전광역시 서구 둔산로73번길 21";
-// contentId: 1932079;
-// contentTypeId: 32;
-// gugunCode: 3;
-// imageUrl: "http://tong.visitkorea.or.kr/cms/resource/87/2584687_image2_1.jpg";
-// latitude: 36.3522820205;
-// longitude: 127.3816682769;
-// mlevel: "6";
-// sidoCode: 3;
-// tel: "042-489-4000";
-// title: "굿모닝레지던스호텔휴[한국관광 품질인증/Korea Quality]";
-// zipcode: "35233";
+    timer = setTimeout(() => {
+      const attractionList = attractionStore.getter.list().value;
+      console.log(
+        `CUR_ZOOM : ${naverMap.value.getZoom()}`,
+        `CALCED: ${Math.max(Math.abs(10 - naverMap.value.getZoom()), 2)}`
+      );
+      useMarkerClustering(attractionList || [], Math.max(Math.abs(7 - naverMap.value.getZoom()), 2));
+    }, 300);
+  });
+};
 
 onMounted(() => {
   if (window.naver && window.naver.maps) {
@@ -90,8 +142,6 @@ watch(
   () => attractionStore.state,
   () => {
     if (attractionStore.state) {
-      console.log("attractionStore.state :", attractionStore.state);
-
       let center = {
         mapY: 0,
         mapX: 0
@@ -114,19 +164,18 @@ watch(
         zoomSize.minMapX = Math.min(zoomSize.maxMapX, attraction.longitude);
         return createInfoWindow(attraction.title);
       });
+
       mapViews.markers = attractionStore.getter.list().value.map((attraction, i) => {
-        const marker = createMarker(attraction.latitude, attraction.longitude, attraction.title);
-        marker.addListener("click", () => viewInfoWindow(mapViews.infoWindows[i], marker));
+        const marker = createMarker(attraction.latitude, attraction.longitude, attraction);
+        marker.addListener("click", () => router.push(`/map/${i}`));
         return marker;
       });
+
       center.mapY = center.mapY / attractionStore.state.length;
       center.mapX = center.mapX / attractionStore.state.length;
       moveMapViewPort(center.mapY, center.mapX);
-      naverMap.value.morph([center.mapY, center.mapX], 12, true);
+      naverMap.value.morph([center.mapY, center.mapX], 10, true);
     }
-    // console.log("attractionStore.state.length :", attractionStore.state.length);
-    // console.log("IN MARKERS :", mapViews.markers);
-    // console.log("IN INFOWINDOWS :", mapViews.infoWindows);
   }
 );
 </script>

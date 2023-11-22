@@ -4,6 +4,7 @@ import MapView from "../views/Map/MapView.vue";
 import UserView from "../views/User/UserView.vue";
 import FollowView from "../views/Follow/FollowView.vue";
 import AdminView from "../views/Admin/AdminView.vue";
+import TestView from "../views/Test/TestView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.VIEW_BASE_URL),
@@ -43,6 +44,11 @@ const router = createRouter({
       path: "/admin",
       name: "Admin",
       component: AdminView
+    },
+    {
+      path: "/test",
+      name: "Test",
+      component: TestView
     }
   ]
 });

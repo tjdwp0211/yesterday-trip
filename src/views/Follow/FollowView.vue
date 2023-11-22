@@ -1,14 +1,14 @@
 <template>
   <main class="follow-page-wrapper">
     <section class="alarm-list-wrapper">
-      <div v-for="(alarm, index) in 11" class="alarm-card-wrapper">
+      <div v-for="(alarm, index) in 11" class="alarm-card-wrapper" :key="index">
         <h4>대전<span>타입</span></h4>
         <p>ㅇㅇㅇㅇ이 추가 되었습니다.</p>
       </div>
     </section>
     <section class="area-cards-list-wrapper">
       <div
-        v-for="(area, index) in sidoFollowList.list"
+        v-for="area in sidoFollowList.list"
         class="area-card-wrapper"
         :key="area.id"
         :style="{ '--follow-background': `url(./follow-${area.name && area.name}.jpg)` }"

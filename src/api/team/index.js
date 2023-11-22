@@ -16,27 +16,30 @@ export async function requestMyTeamListForAdmin() {
   return await axoisForJSON.get(`/team/teams`);
 }
 
+export async function requestCheckAddress(address) {
+  return await axoisForJSON.get(`/team/find-position?address=${address}`);
+}
+
 export async function requestCreateAttractionForAdmin({
   teamId,
-  contentId,
   contentTypeId,
   sidoCode,
   gugunCode,
   title,
   address,
   tel,
-  zipcode,
+  latitude,
+  longitude,
   mlevel
 }) {
-  return await axoisForJSON.delete(`/team/attraction?teamId=${teamId}`, {
-    contentId: contentId,
+  return await axoisForJSON.post(`/team/attraction`, {
+    teamId: teamId,
     contentTypeId: contentTypeId,
     sidoCode: sidoCode,
     gugunCode: gugunCode,
     title: title,
     address: address,
     tel: tel,
-    zipcode: zipcode,
     latitude: latitude,
     longitude: longitude,
     mlevel: mlevel

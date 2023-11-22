@@ -139,7 +139,6 @@ watch(
       attractionDetail.content = attractionStore.getter.one(route.params.contentId - 1).value;
       const reviewList = await requestReviewList(attractionDetail.content.contentId).then((res) => res.data);
       reviewItems.value = reviewList;
-      console.log("reviewItems :", attractionDetail.content);
     }
     willWriteReview.value = false;
   }
