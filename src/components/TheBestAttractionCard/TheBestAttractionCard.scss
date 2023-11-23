@@ -12,18 +12,22 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    padding: 56px;
+    padding: 36px 56px;
     position: relative;
     z-index: 1;
-    p {
+    p,
+    span {
       color: white;
     }
+
     .best-attraction-title {
-      font-size: 32px;
-      font-weight: 900;
-      text-align: left;
-    }
-    .best-attraction-sub-title {
+      padding: 8px;
+      .best-attraction-keyword {
+        font-size: 42px;
+        font-weight: 900;
+        text-align: left;
+        padding-left: 4px;
+      }
     }
   }
 

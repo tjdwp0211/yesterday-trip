@@ -1,24 +1,30 @@
-import { ref, computed } from "vue";
+import { reactive, computed } from "vue";
 import { defineStore } from "pinia";
 
 export const useAttrectionStore = defineStore("attraction", () => {
-  const state = ref([]);
+  const state = reactive({ resAttractions: [], clusteredAttractions: [] });
 
   const action = {
-    setState(item) {
-      state.value = item;
+    setResState(item) {
+      state.resAttractions = item;
     },
-    clearState() {
-      state.value = [];
+    clearResState() {
+      state.resAttractions = [];
+    },
+    setClusteredState(item) {
+      state.clusteredAttractions = item;
+    },
+    clearClusteredState() {
+      state.clusteredAttractions = [];
     }
   };
 
   const getter = {
     list() {
-      return computed(() => state.value);
+      return computed(() => state.resAttractions);
     },
-    one(index) {
-      return computed(() => state.value[index]);
+    one(contentId) {
+      return computed(() => state.resAttractions.filter((el) => el.contentId === Number(contentId))[0]);
     }
   };
 

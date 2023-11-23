@@ -21,12 +21,12 @@ const router = createRouter({
     {
       path: "/map",
       name: "Map",
-      component: MapView,
+      component: () => import("../views/Map/MapView.vue"),
       children: [
         {
           path: ":contentId",
           name: "Reviews",
-          component: MapView
+          component: () => import("../views/Map/MapView.vue")
         }
       ]
     },

@@ -46,12 +46,23 @@
     width: 72px;
     height: 72px;
     border-radius: 50%;
-    &:hover {
-      background-color: white;
-    }
   }
 
   .carousel__icon {
-    fill: var(--main-blue);
+    width: 36px;
+    height: 36px;
+    fill: white;
+    &:hover {
+      animation: bounce 1s inherit ease-in-out alternate;
+    }
+  }
+}
+
+@keyframes bounce {
+  from {
+    transform: scale(0.8);
+  }
+  to {
+    transform: scale(1.2);
   }
 }

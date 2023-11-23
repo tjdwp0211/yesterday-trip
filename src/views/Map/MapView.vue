@@ -1,12 +1,13 @@
 <template>
   <main id="map-view-main">
     <TheMap></TheMap>
-    <TheSide v-if="attractionStore.state" :attractionItems="attractionStore.state" :position-left="0"></TheSide>
+    <TheAttractionSideBar v-if="attractionStore.state.resAttractions" :position-left="0"></TheAttractionSideBar>
   </main>
 </template>
 
 <script setup>
-import TheSide from "../../components/TheAttractionSideBar/TheAttractionSideBar.vue";
+import { onMounted } from "vue";
+import TheAttractionSideBar from "../../components/TheAttractionSideBar/TheAttractionSideBar.vue";
 import TheMap from "../../components/TheMap/TheMap.vue";
 import { useAttrectionStore } from "../../stores/attraction";
 

@@ -3,12 +3,9 @@
     :view="reviewStates.visible"
     :positionLeft="384"
     @viewHandler="handlers.reviewVisible"
+    v-if="attractionStore.state?.clusteredAttractions?.length > 0"
   ></TheReviewSideBar>
-  <aside
-    :class="`card-side-bar-wrapper ${attractionStates.className}`"
-    :style="{ left: `${positionLeft}px` }"
-    v-if="attractionItems"
-  >
+  <aside :class="`card-side-bar-wrapper ${attractionStates.className}`" :style="{ left: `${positionLeft}px` }">
     <div class="card-side-bar-container">
       <Button
         class="opener"
@@ -26,20 +23,20 @@
       </Button>
       <ul class="cards-container">
         <TheAttractionCard
-          v-for="(item, index) in attractionItems"
-          :key="index"
-          :contentId="index + 1"
+          v-for="item in attractionStore.state.clusteredAttractions"
+          :key="item.center.contentId"
+          :contentId="item.center.contentId"
           :reviewSideBarHandler="handlers.reviewVisible"
         >
-          <p class="side-card-title">{{ item.title }}</p>
-          <p class="side-card-address">{{ item.address }}</p>
+          <p class="side-card-title">{{ item.center.title }}</p>
+          <p class="side-card-address">{{ item.center.address }}</p>
           <p class="side-card-star-point">
             <img src="../../assets/imgs/star.svg" width="14" height="14" /><span>{{
-              !item.avgScore ? "0.0" : item.avgScore
+              !item.center.avgScore ? "0.0" : item.center.avgScore
             }}</span>
           </p>
-          <p class="side-card-review-count">리뷰({{ item.tel.length + 900 }})</p>
-          <img class="side-card-img" v-if="item.imageUrl" :src="item.imageUrl" />
+          <p class="side-card-review-count">리뷰({{ item.center.tel.length + 900 }})</p>
+          <img class="side-card-img" v-if="item.center.imageUrl" :src="item.center.imageUrl" />
         </TheAttractionCard>
       </ul>
     </div>
@@ -53,13 +50,15 @@ import Button from "../BaseButton/BaseButton.vue";
 import TheAttractionCard from "./Subs/TheAttractionCard/TheAttractionCard.vue";
 import TheReviewSideBar from "../TheReviewSideBar/TheReviewSideBar.vue";
 import { useRoute } from "vue-router";
+import { useAttrectionStore } from "../../stores/attraction";
+
+const attractionStore = useAttrectionStore();
 
 const route = useRoute();
 const props = defineProps({
-  attractionItems: { type: Object, required: true },
   positionLeft: { type: Number, required: true }
 });
-const { attractionItems, positionLeft } = toRefs(props);
+const { positionLeft } = toRefs(props);
 
 const attractionStates = reactive({ className: "show", visible: true });
 const reviewStates = reactive({ className: "hidden", visible: false });

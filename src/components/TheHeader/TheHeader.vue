@@ -218,7 +218,7 @@ const handleAttractionRequest = async () => {
   }
   if (viewStateBasket.searchInput && searchValue.value) {
     const res = await requsetAttractionByKeyword({ keyword: searchValue.value }).then((res) => res.data);
-    attractionStore.action.setState(res);
+    attractionStore.action.setResState(res);
 
     return initSearchState();
   }
@@ -230,7 +230,7 @@ const handleAttractionRequest = async () => {
     };
     console.log("codesBody :", codesBody);
     const res = await requsetAttractionByCodes(codesBody).then((res) => res.data);
-    attractionStore.action.setState(res);
+    attractionStore.action.setResState(res);
 
     return initSelectBoxsState();
   }

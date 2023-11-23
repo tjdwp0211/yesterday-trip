@@ -136,7 +136,7 @@ watch(
   () => route.params.contentId,
   async () => {
     if (route.params.contentId) {
-      attractionDetail.content = attractionStore.getter.one(route.params.contentId - 1).value;
+      attractionDetail.content = attractionStore.getter.one(route.params.contentId).value;
       const reviewList = await requestReviewList(attractionDetail.content.contentId).then((res) => res.data);
       reviewItems.value = reviewList;
     }

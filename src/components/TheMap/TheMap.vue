@@ -1,39 +1,26 @@
 <template>
   <div id="map"></div>
-  <!-- <div >
-    <span></span>
-    <div>
-      <img src="" /><span></span>
-    </div>
-  </div> -->
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, toRefs, watch } from "vue";
-import { PALETTE } from "../../palette";
-import { useNaverMapStore } from "../../stores/naverMap";
+import { ref, reactive, onMounted, watch } from "vue";
 import { useAttrectionStore } from "../../stores/attraction";
 import { useRouter } from "vue-router";
 import { useFormatContentType } from "../../utils/useFormatContentType";
 import { useMarkerClustering } from "../../utils/useMarkerClustering";
+import { PALETTE } from "../../palette";
 
 const { VITE_NAVER_MAP_CLIENT_ID } = import.meta.env;
 
 const router = useRouter();
-const naverMapStore = useNaverMapStore();
 const attractionStore = useAttrectionStore();
 
-const newMapStates = reactive({ markers: [], infoWindows: [] });
-
-// const props = defineProps({ attractionItems: { type: Object, required: true } });
-// const { attractionItems } = toRefs(props);
 const naverMap = ref(null);
 const mapViews = reactive({
-  markers: [],
-  infoWindows: [],
+  clusteredMarkers: [],
+  markersInstance: [],
   mapPositionY: 37.3595704,
-  mapPositionX: 127.105399,
-  zoom: 10
+  mapPositionX: 127.105399
 });
 
 const createMarkerComponent = (attraction) => {
@@ -48,7 +35,7 @@ const createMarkerComponent = (attraction) => {
 
   const titleBasket = document.createElement("span");
   titleBasket.className = "title-basket";
-  titleBasket.innerText = `${attraction.title.slice(0, 8)}..`;
+  titleBasket.innerText = `${attraction.title}`;
 
   const starPointWrapper = document.createElement("div");
   starPointWrapper.className = "star-point-wrapper";
@@ -84,46 +71,53 @@ const createMarker = (mapY, mapX, attraction) => {
   });
 };
 
-const createInfoWindow = (title) => {
-  const infoWindow = document.createElement("div");
-  infoWindow.className = "info-window";
-  infoWindow.innerText = title;
-  return new naver.maps.InfoWindow({
-    content: infoWindow,
-    borderColor: PALETTE.MAIN_BLUE,
-    borderWidth: 2
+const deboucingClustering = () => {
+  const resLength = attractionStore.state.resAttractions.length;
+  const center = {
+    y: resLength > 0 ? 0 : 37.3595704,
+    x: resLength > 0 ? 0 : 127.105399
+  };
+
+  attractionStore.state.resAttractions.forEach((att) => {
+    center.x += att.latitude;
+    center.y += att.longitude;
   });
-};
 
-const viewInfoWindow = (infoWindow, marker) => {
-  if (infoWindow.getMap()) infoWindow.close();
-  else infoWindow.open(naverMap.value, marker);
-};
+  naverMap.value.morph([center.y / resLength - 0.2, center.x / resLength], 10, true);
 
-const moveMapViewPort = (mapY, mapX) => {
-  naverMap.value.setCenter(new naver.maps.LatLng(mapY, mapX));
+  let timer;
+  naver.maps.Event.addListener(naverMap.value, "mousemove", (e) => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(() => {
+      const attractionList = attractionStore.state.resAttractions;
+      const curViewPosrtBorder = naverMap.value.getBounds();
+
+      const groupNum = Math.max(Math.abs(7 - naverMap.value.getZoom()), 1);
+      const listInViewPort = attractionList.filter((attraction) => {
+        const validateX = curViewPosrtBorder._min.x < attraction.latitude < curViewPosrtBorder._max.x;
+        const validateY = curViewPosrtBorder._min.y < attraction.longitude < curViewPosrtBorder._max.y;
+        if (validateX && validateY) {
+          return attraction;
+        }
+      });
+
+      attractionStore.action.setClusteredState(useMarkerClustering(listInViewPort, groupNum));
+    }, 300);
+  });
 };
 
 const initMap = () => {
   const container = document.getElementById("map");
   const options = {
     center: new naver.maps.LatLng(mapViews.mapPositionY, mapViews.mapPositionX),
-    zoom: mapViews.zoom
+    zoom: 8
   };
   naverMap.value = new naver.maps.Map(container, options);
-  let timer;
-  // naver.maps.Event.addListener(naverMap.value, "mousemove", (e) => {
-  //   if (timer) clearTimeout(timer);
-
-  //   timer = setTimeout(() => {
-  //     const attractionList = attractionStore.getter.list().value;
-  //     console.log(
-  //       `CUR_ZOOM : ${naverMap.value.getZoom()}`,
-  //       `CALCED: ${Math.max(Math.abs(10 - naverMap.value.getZoom()), 2)}`
-  //     );
-  //     useMarkerClustering(attractionList || [], Math.max(Math.abs(7 - naverMap.value.getZoom()), 2));
-  //   }, 300);
-  // });
+  if (attractionStore.state.resAttractions.length > 0) {
+    deboucingClustering();
+  }
 };
 
 onMounted(() => {
@@ -139,42 +133,35 @@ onMounted(() => {
 });
 
 watch(
-  () => attractionStore.state,
+  () => attractionStore.state.resAttractions,
   () => {
-    if (attractionStore.state) {
-      let center = {
-        mapY: 0,
-        mapX: 0
-      };
-      let zoomSize = {
-        minMapY: 0,
-        maxMapY: 0,
-        minMapX: 0,
-        maxMapX: 0
-      };
-      mapViews.markers.forEach((marker, i) => marker.setMap(null));
-      mapViews.infoWindows.forEach((infoWindow, i) => infoWindow.setMap(null));
+    deboucingClustering();
+  }
+);
 
-      // mapViews.infoWindows = attractionStore.getter.list().value.map((attraction, i) => {
-      //   center.mapY += attraction.latitude;
-      //   center.mapX += attraction.longitude;
-      //   zoomSize.maxMapY = Math.max(zoomSize.maxMapY, attraction.latitude);
-      //   zoomSize.minMapY = Math.min(zoomSize.maxMapY, attraction.latitude);
-      //   zoomSize.maxMapX = Math.max(zoomSize.maxMapX, attraction.longitude);
-      //   zoomSize.minMapX = Math.min(zoomSize.maxMapX, attraction.longitude);
-      //   return createInfoWindow(attraction.title);
-      // });
+watch(
+  () => attractionStore.state.clusteredAttractions,
+  () => {
+    if (attractionStore.state.clusteredAttractions) {
+      if (mapViews.markersInstance) {
+        mapViews.markersInstance.forEach((marker, i) => marker.setMap(null));
+      }
 
-      mapViews.markers = attractionStore.getter.list().value.map((attraction, i) => {
-        const marker = createMarker(attraction.latitude, attraction.longitude, attraction);
-        marker.addListener("click", () => router.push(`/map/${i}`));
+      mapViews.markersInstance = attractionStore.state.clusteredAttractions.map((attraction, i) => {
+        const marker = createMarker(attraction.center.latitude, attraction.center.longitude, attraction.center);
+        marker.addListener("click", () => {
+          router.push(`/map/${attraction.center.contentId}`);
+        });
+
         return marker;
       });
-
-      center.mapY = center.mapY / attractionStore.state.length;
-      center.mapX = center.mapX / attractionStore.state.length;
-      moveMapViewPort(center.mapY, center.mapX);
-      naverMap.value.morph([center.mapY, center.mapX], 10, true);
+      const curNaverMap = naverMap.value.getCenter();
+      if (attractionStore.state.clusteredAttractions.length === 1) {
+        const target = attractionStore.state.clusteredAttractions[0];
+        naverMap.value.morph([target.center.longitude - 0.7, target.center.latitude], naverMap.value.getZoom(), true);
+      } else {
+        naverMap.value.morph([curNaverMap.y, curNaverMap.x], naverMap.value.getZoom(), true);
+      }
     }
   }
 );
