@@ -1,8 +1,9 @@
 <template>
   <header>
     <!-- <img src="/logo.png" width="144" height="48" /> -->
-    <RouterLink to="/home">
+    <RouterLink class="logo-wrapper" to="/home">
       <div id="logo"></div>
+      <div></div>
     </RouterLink>
     <form
       class="select-boxs-wrapper"
@@ -43,7 +44,7 @@
     <div class="header-right-wrapper">
       <a v-if="!userStore.state?.roles?.includes('ROLE_ADMIN')" class="to-follow" @click="handleToFollowPage">
         여러 지역의 소식을 받아보세요
-        <span class="alram-count">{{ alarmStore.state.noneReadCount }}</span>
+        <span v-if="alarmStore.state.noneReadCount" class="alram-count">{{ alarmStore.state.noneReadCount }}</span>
       </a>
       <a v-if="userStore.state?.roles?.includes('ROLE_ADMIN')" class="to-admin" @click="handleToAdminPage">
         새로운 컨텐츠를 등록해주세요

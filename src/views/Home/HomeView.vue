@@ -11,7 +11,6 @@
         </template>
       </Carousel>
     </section>
-    <section class="home-section"></section>
   </main>
 </template>
 

@@ -8,6 +8,16 @@ export const useAlarmStore = defineStore("alarm", () => {
     setNoneReadAlramList(alarms) {
       state.noneReadList = alarms;
     },
+    setUserReadedAlarm(alarmID) {
+      state.noneReadList.forEach((alarm, i) => {
+        if (alarm.id === alarmID) {
+          state.noneReadList[i].checked = true;
+          state.readList.push(state.noneReadList[i]);
+          state.noneReadList.splice(i, 1);
+        }
+      });
+      state.noneReadCount -= 1;
+    },
     setReadAlramList(alarms) {
       state.readList = alarms;
     },
@@ -16,7 +26,7 @@ export const useAlarmStore = defineStore("alarm", () => {
       state.noneReadCount += 1;
     },
     setNoneReadCount() {
-      noneReadCount += 1;
+      state.noneReadCount += 1;
     },
     setListAndIDState(alarms, id) {
       state.noneReadList = alarms;

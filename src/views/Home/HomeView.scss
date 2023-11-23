@@ -1,12 +1,11 @@
 #home-view-main {
   height: calc(100vh - 120px);
-  overflow-y: scroll;
+  overflow-y: auto;
 
   & > .home-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    // justify-content: center;
     height: calc(100vh - 120px);
 
     h1 {

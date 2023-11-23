@@ -4,12 +4,12 @@
       <div
         v-for="(alarm, index) in alarmStore.state.noneReadList"
         class="alarm-card-wrapper none-read-mark"
-        :key="alarm.id"
-        @click="handleAlarmClick"
+        :key="index"
+        @click="() => handleAlarmClick(alarm.id)"
       >
         <span class="alarm-text-header">
           <span class="main-text">
-            대전
+            {{ alarm.sidoName }}
             <span>{{ useFormatContentType(alarm.contentTypeId).formatText }}</span>
           </span>
           <span class="time-diff">{{ useTimeGapFormat(alarm.createAt) }}</span>
@@ -19,10 +19,10 @@
           >이 추가 되었습니다.
         </p>
       </div>
-      <div v-for="(alarm, index) in alarmStore.state.readList" class="alarm-card-wrapper" :key="alarm.id">
+      <div v-for="(alarm, index) in alarmStore.state.readList" class="alarm-card-wrapper" :key="index">
         <span class="alarm-text-header">
           <span class="main-text">
-            대전
+            {{ alarm.sidoName }}
             <span>{{ useFormatContentType(alarm.contentTypeId).formatText }}</span>
           </span>
           <span class="time-diff">{{ useTimeGapFormat(alarm.createAt) }}</span>
@@ -35,10 +35,10 @@
     </section>
     <section class="area-cards-list-wrapper">
       <div
-        v-for="area in listBasket.list"
+        v-for="area in listBasket.followList"
         class="area-card-wrapper"
         :key="area.id"
-        :style="{ '--follow-background': `url(./follow-${area.name && area.name}.jpg)` }"
+        :style="{ '--follow-background': `url(./follow-${area.name}.jpg)` }"
       >
         <img
           class="heart-img"
@@ -53,7 +53,7 @@
           @click="() => handleFollowing({ teamId: area.id, willFollowing: true })"
         />
         <div class="text-container">
-          <h4>{{ area.name }}</h4>
+          <span>{{ area.name }}</span>
         </div>
       </div>
     </section>
@@ -88,14 +88,22 @@ const handleFollowing = async ({ teamId, willFollowing }) => {
   });
 };
 
+const handleAlarmClick = async (alarmID) => {
+  await requestReadAlarm(alarmID).then((res) => {
+    return res.data;
+  });
+
+  alarmStore.action.setUserReadedAlarm(alarmID);
+};
+
 onMounted(async () => {
   const [followListRes, readAlarmRes, noneReadAlarmRes] = await Promise.all([
     requestTeamListForUser(),
     requestReadAlarmList(),
     requestNoneReadAlarmList()
   ]);
-  alarmStore.action.setReadAlramList(noneReadAlarmRes.data);
-  alarmStore.action.setNoneReadAlramList(readAlarmRes.data);
+  alarmStore.action.setReadAlramList(readAlarmRes.data);
+  alarmStore.action.setNoneReadAlramList(noneReadAlarmRes.data);
   listBasket.followList = followListRes.data;
 });
 </script>

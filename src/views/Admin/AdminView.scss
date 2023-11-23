@@ -6,14 +6,15 @@
   justify-content: center;
 
   form {
-    width: 35%;
+    width: 60%;
     min-width: 518px;
-    height: 442px;
+    height: 542px;
     box-shadow: 0px 0px 5px var(--main-gray);
     border-radius: 20px;
     margin-bottom: 10%;
     margin-right: 10%;
     padding: 24px;
+    position: relative;
 
     .form-wrapper {
       width: 100%;
@@ -33,10 +34,71 @@
 
         .inner {
           width: 100%;
-          height: calc(100% - 34px);
-          & > div > label {
+          height: 100%;
+          display: flex;
+          gap: 24px;
+          flex-direction: column;
+          h4 {
+            font-weight: 700;
+          }
+          & > div > label:not(.title-label, .address-label, .tel-label) {
             display: inline-block;
-            width: 30%;
+            width: 25%;
+          }
+
+          .sido-container,
+          .gugun-container,
+          .content-type-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            height: 80%;
+            padding: 4px;
+            overflow-y: auto;
+          }
+
+          .custom-label-container {
+            user-select: none;
+            position: relative;
+            cursor: pointer;
+            border-radius: 32px;
+            overflow: hidden;
+            border: 1px solid var(--main-blue);
+            padding: 4px;
+
+            span:not(.checkmark) {
+              position: relative;
+              z-index: 1;
+              color: var(--light-black);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+
+            .checkmark {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: inherit;
+            }
+            input:checked ~ .checkmark {
+              background-color: var(--main-blue);
+              opacity: 0.4;
+              color: white;
+            }
+
+            input {
+              position: absolute;
+              opacity: 0;
+              cursor: pointer;
+              height: 0;
+              width: 0;
+            }
           }
 
           & > div > input,
@@ -44,21 +106,67 @@
             border: 1px solid red;
           }
         }
-        .gugun-container {
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          flex-wrap: wrap;
-        }
       }
     }
 
-    .buttons-wrapper {
-      width: 100%;
-      height: 34px;
-      border: 1px solid red;
-      display: flex;
-      justify-content: space-between;
+    .prev-button,
+    .next-button {
+      position: absolute;
+      top: 40%;
     }
+    .prev-button {
+      left: 0;
+    }
+    .next-button {
+      right: 0;
+    }
+  }
+}
+
+.admin-input-container {
+  .etc-infos-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    .title-label,
+    .address-label,
+    .tel-label {
+      display: inline-block;
+      width: 50%;
+      position: relative;
+
+      & > input {
+        border-bottom: 1px solid var(--main-blue);
+        width: 100%;
+        height: 40px;
+        padding-top: 12px;
+      }
+
+      .checked-address {
+        background-color: var(--main-blue);
+        width: 100%;
+        height: 28px;
+        color: white;
+        border-radius: 24px;
+        margin-top: 12px;
+        text-align: center;
+        line-height: 28px;
+        font-weight: 700;
+      }
+    }
+    .check-adress-button {
+      position: absolute;
+      top: 38px;
+      right: 0;
+    }
+  }
+  .add-attraction-submit-button {
+    // position: absolute;
+    // right: 0;
+    margin-left: 63%;
   }
 }

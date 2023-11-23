@@ -107,6 +107,7 @@ function kMediansClusteringByUserClick(data, numClusters, userClickedContentId) 
 
 export function useMarkerClustering(data, groupNum, userClickedContentId) {
   // 클러스터링 실행
+  console.log(`IN CLUSTER :`, data, groupNum, userClickedContentId);
   if (userClickedContentId) {
     const clusteredList = kMediansClusteringByUserClick(data, groupNum, userClickedContentId);
     return clusteredList;

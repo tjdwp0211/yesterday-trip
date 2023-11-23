@@ -2,7 +2,7 @@
   <div class="alarm-card-wrapper none-read-mark" :key="item.id" @click="handleAlarmClick">
     <span class="alarm-text-header">
       <span class="main-text">
-        대전
+        {{ item.sidoName }}
         <span>{{ useFormatContentType(item.contentTypeId).formatText }}</span>
       </span>
       <span class="time-diff">{{ useTimeGapFormat(item.createAt) }}</span>
@@ -17,7 +17,7 @@
   <div class="alarm-card-wrapper" :key="item.id">
     <span class="alarm-text-header">
       <span class="main-text">
-        대전
+        {{ item.sidoName }}
         <span>{{ useFormatContentType(item.contentTypeId).formatText }}</span>
       </span>
       <span class="time-diff">{{ useTimeGapFormat(item.createAt) }}</span>
@@ -37,6 +37,7 @@ import { useTimeGapFormat } from "../../utils/useTimeGapFormat";
 
 const props = defineProps({ item: Object, required: true });
 const { item } = toRefs(props);
+console.log(`item :`, item);
 const alarmStore = useAlarmStore();
 </script>
 

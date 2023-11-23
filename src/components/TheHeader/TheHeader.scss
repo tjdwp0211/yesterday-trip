@@ -6,6 +6,13 @@ header {
   padding: 0px 24px;
   height: 120px;
   border-bottom: 1px solid var(--main-gray);
+
+  .logo-wrapper {
+    display: flex;
+    & > div:not(#logo) {
+      width: 172px;
+    }
+  }
   .link-warrper {
     width: clamp(120px, 12%, 272px);
     height: 100%;

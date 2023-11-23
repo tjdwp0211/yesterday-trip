@@ -9,120 +9,144 @@
           <div class="select-container inner">
             <h2>추가할 지역 정보를 알려주세요</h2>
             <div class="sido-container">
-              <label v-for="sido in selectOptions.sido" :key="sido.id" :for="sido.id">
-                <BaseInput
+              <label
+                class="custom-label-container"
+                v-for="sido in selectOptions.sido"
+                :key="sido.id"
+                :for="`sido-${sido.id}`"
+              >
+                <input
                   type="radio"
-                  :id="sido.id"
-                  :value="sido.id"
+                  :id="`sido-${sido.id}`"
                   name="sido"
-                  @handle-change="handleSidoSelectValue"
+                  :value="sido.id"
+                  @input="handleSidoSelectValue"
                 />
-                {{ sido.name }}
+                <span
+                  :class="`label-name-${sido.id}`"
+                  :style="`${selectValues.sido} label-name-${sido.id}{ color: white }`"
+                  >{{ sido.name }}</span
+                >
+                <span class="checkmark"></span>
               </label>
             </div>
           </div>
           <div class="select-container inner">
             <h2>자세한 위치도 알려주세요</h2>
             <div class="gugun-container">
-              <template v-if="selectOptions.gugun.length > 0">
-                <label v-for="gugun in selectOptions.gugun" :key="gugun?.id" :for="gugun?.id">
-                  <BaseInput
-                    type="radio"
-                    :id="gugun?.id"
-                    :value="gugun?.id"
-                    name="gugun"
-                    @handle-change="handleGugunSelectValue"
-                  />
-                  {{ gugun?.name }}
-                </label>
-              </template>
+              <label
+                class="custom-label-container"
+                v-for="gugun in selectOptions.gugun"
+                :key="gugun?.id"
+                :for="`gugun-${gugun?.id}`"
+              >
+                <input
+                  type="radio"
+                  :id="`gugun-${gugun.id}`"
+                  name="gugun"
+                  :value="gugun.id"
+                  @input="handleGugunSelectValue"
+                />
+                <span class="label-name">{{ gugun.name }}</span>
+                <span class="checkmark"></span>
+              </label>
             </div>
           </div>
           <div class="select-container inner">
             <h2>어떤 추가할 정보는 종류인가요?</h2>
             <div class="content-type-container">
-              <label v-for="contentType in selectOptions.contentType" :key="contentType.id" :for="contentType.id">
-                <BaseInput
+              <label
+                v-for="contentType in selectOptions.contentType"
+                :key="contentType.id"
+                :for="`content-type-${contentType.id}`"
+                class="custom-label-container"
+              >
+                <input
                   type="radio"
-                  :id="contentType.id"
-                  :value="contentType.id"
+                  :id="`content-type-${contentType.id}`"
                   name="content-type"
-                  @handle-change="handleContentTypeSelectValue"
+                  :value="contentType.id"
+                  @input="handleContentTypeSelectValue"
                 />
-                {{ contentType.name }}
+                <span class="label-name">{{ contentType.name }}</span>
+                <span class="checkmark"></span>
               </label>
             </div>
           </div>
-          <div class="input-container inner">
-            <h2>인풋 뷰</h2>
-            <div>
-              <label
-                >제목
+          <div class="admin-input-container inner">
+            <!-- <h2>마지막으로 정보들을 입력해주세요</h2> -->
+            <div class="etc-infos-wrapper">
+              <!-- <div> -->
+              <label class="title-label">
+                이름은 무엇인가요
                 <BaseInput id="title" type="text" :value="keyboardValues.title" @handle-change="handleKeyboardValues" />
               </label>
-            </div>
-            <!-- <div>
-              <label>
-                컨텐츠
-                <BaseInput
-                  id="content"
-                  type="text"
-                  :value="keyboardValues.content"
-                  @handle-change="handleKeyboardValues"
-                ></BaseInput>
-              </label>
-            </div> -->
-            <div>
-              <label>
-                주소
+              <!-- </div> -->
+              <!-- <div> -->
+              <label class="address-label">
+                주소 입력 후 확인을 해주세요
                 <BaseInput
                   id="address"
                   type="text"
                   :value="keyboardValues.address"
                   @handle-change="handleKeyboardValues"
                 />
+                <BaseButton
+                  :background-color="PALETTE.MAIN_BLUE"
+                  color="white"
+                  width="72px"
+                  height="24px"
+                  class="check-adress-button"
+                  type="button"
+                  :sortCenter="true"
+                  @click="handleRequestCheckAddress"
+                  >주소 확인</BaseButton
+                >
+                <div v-if="addressCoordinate.latitude && addressCoordinate.longitude" class="checked-address">
+                  주소 확인이 되었습니다!
+                </div>
               </label>
-              <button type="button" @click="handleRequestCheckAddress">주소 확인</button>
-            </div>
-            <div>
-              <label>
-                전화번호
+
+              <!-- </div> -->
+              <!-- <div> -->
+              <label class="tel-label">
+                전화번호를 입력해주세요
                 <BaseInput id="tel" type="tel" :value="keyboardValues.tel" @handle-change="handleKeyboardValues" />
               </label>
+              <!-- </div> -->
             </div>
             <BaseButton
               type="submit"
-              background-color="white"
-              :color="PALETTE.MAIN_BLUE"
+              :background-color="PALETTE.MAIN_BLUE"
+              color="white"
               :sortCenter="true"
               width="84px"
               height="56px"
+              class="add-attraction-submit-button"
             >
               작성
             </BaseButton>
           </div>
         </section>
       </div>
-      <div class="buttons-wrapper">
-        <BaseButton
-          type="button"
-          color="white"
-          background-color="inherit"
-          :sortCenter="true"
-          :eventHandler="() => handleVisibles(false)"
-        >
-          <img src="../../assets/imgs/arrow-left.svg" width="24" height="24" />
-        </BaseButton>
-        <BaseButton
-          type="button"
-          color="white"
-          background-color="inherit"
-          :sortCenter="true"
-          :eventHandler="() => handleVisibles(true)"
-        >
-          <img src="../../assets/imgs/arrow-right.svg" width="24" height="24" />
-        </BaseButton>
-      </div>
+      <BaseButton
+        class="prev-button"
+        type="button"
+        background-color="inherit"
+        :sortCenter="true"
+        :eventHandler="() => handleVisibles(false)"
+      >
+        <img src="../../assets/imgs/arrow-left.svg" width="24" height="24" />
+      </BaseButton>
+      <BaseButton
+        class="next-button"
+        type="button"
+        background-color="inherit"
+        :sortCenter="true"
+        :eventHandler="() => handleVisibles(true)"
+      >
+        <img src="../../assets/imgs/arrow-right.svg" width="24" height="24" />
+      </BaseButton>
     </form>
   </main>
 </template>
@@ -135,12 +159,16 @@ import { requestMyTeamListForAdmin, requestCheckAddress, requestCreateAttraction
 import { requsetContentType, requsetGuGUn } from "../../api/region";
 import { PALETTE } from "../../palette";
 
+import { useRouter } from "vue-router";
+
 const selectOptions = reactive({ sido: [], gugun: [], contentType: [] });
 const visibles = reactive({ curIndex: 0, views: [true, false] });
 const selectValues = reactive({ sido: "", gugun: "", contentType: "" });
 // const keyboardValues = reactive({ title: "", content: "", address: "", tel: "" });
 const keyboardValues = reactive({ title: "", address: "", tel: "" });
 const addressCoordinate = reactive({ latitude: 0.0, longitude: 0.0 });
+
+const reouter = useRouter();
 
 const handleVisibles = (next) => {
   if ((!next && visibles.curIndex === 0) || (next && visibles.curIndex === -3)) {
@@ -212,26 +240,13 @@ const handleRequestCreateNewAttraction = async (e) => {
   });
 };
 
-const DUMMY = {
-  contentId: "int",
-  contentTypeId: "int",
-  sidoCode: "int",
-  gugunCode: "int",
-  title: "string",
-  address: "string",
-  tel: "string"
-  // zipcode: "string",
-  // latitude: "double",
-  // longitude: "double",
-  // mlevel: ""
-};
-
 onMounted(async () => {
   try {
     const [manageList, contentTypeList] = await Promise.all([requestMyTeamListForAdmin(), requsetContentType()]);
     selectOptions.sido = manageList.data;
     selectOptions.contentType = contentTypeList.data;
     console.log(`manageList.data :`, manageList.data);
+    reouter.push("/home");
   } catch (err) {
     alert("알 수 없는 에러가 발생하였습니다.");
   }
