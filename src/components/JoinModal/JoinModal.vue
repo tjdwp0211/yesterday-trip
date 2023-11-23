@@ -22,7 +22,7 @@
           <BaseButton
             class="send-email"
             type="button"
-            width="68px"
+            width="76px"
             height="32px"
             color="white"
             :sort-center="true"
@@ -42,13 +42,13 @@
           <BaseButton
             class="send-code"
             type="button"
-            width="68px"
+            :width="!emailCheckGood ? '68px' : '110px'"
             height="32px"
             color="white"
             :sort-center="true"
             :event-handler="sendAuthCodeToServer"
             :background-color="alreadyExistEmail ? MAIN_GRAY : MAIN_BLUE"
-            >확인</BaseButton
+            >{{ !emailCheckGood ? "확인" : "인증 되었습니다!" }}</BaseButton
           >
         </div>
       </div>
@@ -101,6 +101,7 @@ const { width, height } = toRefs(props);
 const { MAIN_BLUE, MAIN_GRAY } = PALETTE;
 
 const alreadyExistEmail = ref(false);
+const emailCheckGood = ref(false);
 const emailAuth = reactive({ authCode: "", sended: false });
 
 const valueHandler = (e) => {
@@ -134,10 +135,11 @@ const sendAuthCodeToUser = async () => {
 };
 
 const sendAuthCodeToServer = async () => {
-  await sendAuthCode({ email: joinValues.joinEmail, authCode: emailAuth.authCode }).then((res) => {
+  const res = await sendAuthCode({ email: joinValues.joinEmail, authCode: emailAuth.authCode }).then((res) => {
     console.log(`SERVER에 보낸 AUTH CODE :`, res.data);
     return res.data;
   });
+  emailCheckGood.value = res;
 };
 
 let timer = null;

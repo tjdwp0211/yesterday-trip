@@ -35,7 +35,7 @@
               !item.center.avgScore ? "0.0" : item.center.avgScore
             }}</span>
           </p>
-          <p class="side-card-review-count">리뷰({{ item.center.tel.length + 900 }})</p>
+          <p class="side-card-review-count">리뷰({{ Math.round(Math.random() * 50) }})</p>
           <img class="side-card-img" v-if="item.center.imageUrl" :src="item.center.imageUrl" />
         </TheAttractionCard>
       </ul>

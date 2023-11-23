@@ -71,7 +71,7 @@ const createMarker = (mapY, mapX, attraction) => {
   });
 };
 
-const deboucingClustering = () => {
+const deboucingClustering = (absGruopNum) => {
   const resLength = attractionStore.state.resAttractions.length;
   const center = {
     y: resLength > 0 ? 0 : 37.3595704,
@@ -83,18 +83,38 @@ const deboucingClustering = () => {
     center.y += att.longitude;
   });
 
+  let timer;
+  if (timer) {
+    clearTimeout(timer);
+  }
+  timer = setTimeout(() => {
+    const attractionList = attractionStore.state.resAttractions;
+    const curViewPosrtBorder = naverMap.value.getBounds();
+    const groupNum = absGruopNum ? absGruopNum : Math.max(Math.abs(4 - naverMap.value.getZoom()), 1);
+
+    const listInViewPort = attractionList.filter((attraction) => {
+      const validateX = curViewPosrtBorder._min.x < attraction.latitude < curViewPosrtBorder._max.x;
+      const validateY = curViewPosrtBorder._min.y < attraction.longitude < curViewPosrtBorder._max.y;
+      if (validateX && validateY) {
+        return attraction;
+      }
+    });
+
+    attractionStore.action.setClusteredState(useMarkerClustering(listInViewPort, groupNum));
+  }, 300);
+
   naverMap.value.morph([center.y / resLength - 0.2, center.x / resLength], 10, true);
 
-  let timer;
+  let mouseMoveTimer;
   naver.maps.Event.addListener(naverMap.value, "mousemove", (e) => {
-    if (timer) {
-      clearTimeout(timer);
+    if (mouseMoveTimer) {
+      clearTimeout(mouseMoveTimer);
     }
-    timer = setTimeout(() => {
+    mouseMoveTimer = setTimeout(() => {
       const attractionList = attractionStore.state.resAttractions;
       const curViewPosrtBorder = naverMap.value.getBounds();
+      const groupNum = absGruopNum ? absGruopNum : Math.max(Math.abs(4 - naverMap.value.getZoom()), 1);
 
-      const groupNum = Math.max(Math.abs(7 - naverMap.value.getZoom()), 1);
       const listInViewPort = attractionList.filter((attraction) => {
         const validateX = curViewPosrtBorder._min.x < attraction.latitude < curViewPosrtBorder._max.x;
         const validateY = curViewPosrtBorder._min.y < attraction.longitude < curViewPosrtBorder._max.y;
@@ -115,8 +135,10 @@ const initMap = () => {
     zoom: 8
   };
   naverMap.value = new naver.maps.Map(container, options);
-  if (attractionStore.state.resAttractions.length > 0) {
-    deboucingClustering();
+  if (attractionStore.state.resAttractions.length === 3) {
+    return deboucingClustering(3);
+  } else if (attractionStore.state.resAttractions.length > 0) {
+    return deboucingClustering();
   }
 };
 
@@ -158,7 +180,7 @@ watch(
       const curNaverMap = naverMap.value.getCenter();
       if (attractionStore.state.clusteredAttractions.length === 1) {
         const target = attractionStore.state.clusteredAttractions[0];
-        naverMap.value.morph([target.center.longitude - 0.7, target.center.latitude], naverMap.value.getZoom(), true);
+        naverMap.value.morph([target.center.longitude, target.center.latitude], naverMap.value.getZoom(), true);
       } else {
         naverMap.value.morph([curNaverMap.y, curNaverMap.x], naverMap.value.getZoom(), true);
       }

@@ -9,7 +9,7 @@
         :style="{ border: '0px' }"
         background-color="inherit"
         color="white"
-        width="168px"
+        width="180px"
         height="32px"
         :event-handler="handleClickBestAttractionCard"
       >
@@ -38,8 +38,9 @@ const router = useRouter();
 const attractionStore = useAttrectionStore();
 
 const handleClickBestAttractionCard = async () => {
-  const res = await requsetAttractionByKeyword({ keyword: item.value.name }).then((res) => res.data);
-  attractionStore.action.setResState(res);
+  const res = await requestBestAttractionBySido({ sido: item.value.id }).then((res) => res.data);
+  // const res = await requsetAttractionByKeyword({ keyword: item.value.name }).then((res) => res.data);
+  attractionStore.action.setResState(res.shortestPath);
   console.log(`attractionStore.state :`, attractionStore.state);
   router.push("/map");
 };

@@ -80,20 +80,18 @@ function kMediansClusteringByUserClick(data, numClusters, userClickedContentId) 
     const clusters = new Array(numClusters).fill().map(() => []);
 
     data.forEach((point) => {
-      if (point.contentId === userClickedContentId) {
-        let minDistance = Infinity;
-        let clusterIndex = userClickedContentId;
+      let minDistance = Infinity;
+      let clusterIndex = 0;
 
-        centroids.forEach((centroid, index) => {
-          const dist = distance(point, centroid);
-          if (dist < minDistance) {
-            minDistance = dist;
-            clusterIndex = centroid.contentId;
-          }
-        });
+      centroids.forEach((centroid, index) => {
+        const dist = distance(point, centroid);
+        if (dist < minDistance) {
+          minDistance = dist;
+          clusterIndex = index;
+        }
+      });
 
-        clusters[clusterIndex].push(point);
-      }
+      clusters[clusterIndex].push(point);
     });
 
     // 중앙값 업데이트 없이 종료
@@ -105,14 +103,9 @@ function kMediansClusteringByUserClick(data, numClusters, userClickedContentId) 
   }
 }
 
-export function useMarkerClustering(data, groupNum, userClickedContentId) {
+export function useMarkerClustering(data, groupNum) {
   // 클러스터링 실행
-  console.log(`IN CLUSTER :`, data, groupNum, userClickedContentId);
-  if (userClickedContentId) {
-    const clusteredList = kMediansClusteringByUserClick(data, groupNum, userClickedContentId);
-    return clusteredList;
-  } else {
-    const clusteredList = kMediansClustering(data, groupNum);
-    return clusteredList;
-  }
+  const clusteredList = kMediansClustering(data, groupNum);
+  console.log(`IN CLUSTER :`, clusteredList);
+  return clusteredList;
 }
