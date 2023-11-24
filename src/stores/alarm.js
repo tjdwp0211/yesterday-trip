@@ -6,6 +6,7 @@ export const useAlarmStore = defineStore("alarm", () => {
 
   const action = {
     setNoneReadAlramList(alarms) {
+      console.log(`alarms :`, alarms);
       state.noneReadList = alarms;
     },
     setUserReadedAlarm(alarmID) {
@@ -25,8 +26,9 @@ export const useAlarmStore = defineStore("alarm", () => {
       state.lastAlramID = id;
       state.noneReadCount += 1;
     },
-    setNoneReadCount() {
-      state.noneReadCount += 1;
+    setNoneReadCount(num) {
+      console.log(`num :`, num);
+      state.noneReadCount = num;
     },
     setListAndIDState(alarms, id) {
       state.noneReadList = alarms;

@@ -61,7 +61,7 @@
 </template>
 
 <script setup>
-import { reactive, onMounted } from "vue";
+import { reactive, onMounted, watch } from "vue";
 import { requestFollowingForUser, requestUnFollowingTeamForUser, requestTeamListForUser } from "../../api/team";
 import { requestReadAlarmList, requestNoneReadAlarmList, requestReadAlarm } from "../../api/alarm";
 import { useAlarmStore } from "../../stores/alarm";
@@ -81,9 +81,9 @@ const handleFollowing = async ({ teamId, willFollowing }) => {
       return res.data;
     });
   }
-  listBasket.list.forEach((sido, i) => {
+  listBasket.followList.forEach((sido, i) => {
     if (sido.id === teamId) {
-      listBasket.list[i].followed = !listBasket.list[i].followed;
+      listBasket.followList[i].followed = !listBasket.followList[i].followed;
     }
   });
 };

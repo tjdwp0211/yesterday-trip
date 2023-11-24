@@ -78,7 +78,9 @@ const handleFormVisible = () => {
 };
 
 const handleRequsetChangePassword = async () => {
-  await requestChangePassword(newPasswordState.value).then((res) => res.data);
+  await requestChangePassword(newPasswordState.value).then((res) => {
+    alert("비밀번호가 성공적으로 바뀌었습니다!");
+  });
 };
 </script>
 <style lang="scss">

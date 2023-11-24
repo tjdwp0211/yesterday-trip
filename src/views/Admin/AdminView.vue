@@ -217,7 +217,7 @@ const handleRequestCreateNewAttraction = async (e) => {
     contentTypeId: selectValues.contentType,
     sidoCode: selectValues.sido,
     gugunCode: selectValues.gugun,
-    title: keyboardValues.title,
+    keyword: keyboardValues.title,
     address: keyboardValues.address,
     tel: keyboardValues.tel,
     latitude: addressCoordinate.latitude,
@@ -229,14 +229,14 @@ const handleRequestCreateNewAttraction = async (e) => {
     contentTypeId: selectValues.contentType,
     sidoCode: selectValues.sido,
     gugunCode: selectValues.gugun,
-    title: keyboardValues.title,
+    keyword: keyboardValues.title,
     address: keyboardValues.address,
     tel: keyboardValues.tel,
     latitude: addressCoordinate.latitude,
     longitude: addressCoordinate.longitude,
     mlevel: 6
   }).then((res) => {
-    console.log(`res.data :`, res.data);
+    alert("등록이 완료 되었습니다!");
   });
 };
 
@@ -246,7 +246,7 @@ onMounted(async () => {
     selectOptions.sido = manageList.data;
     selectOptions.contentType = contentTypeList.data;
     console.log(`manageList.data :`, manageList.data);
-    reouter.push("/home");
+    // reouter.push("/home");
   } catch (err) {
     alert("알 수 없는 에러가 발생하였습니다.");
   }

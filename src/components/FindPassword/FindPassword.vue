@@ -49,7 +49,7 @@ const modalStore = useModalStore();
 
 const handleRequestFindPassword = async () => {
   const res = await findPassword(emailValue.value).then((res) => {
-    console.log(`res.data :`, res.data);
+    alert("임시 비밀번호가 전송되었습니다!");
     return res.data;
   });
 };

@@ -135,10 +135,8 @@ const initMap = () => {
     zoom: 8
   };
   naverMap.value = new naver.maps.Map(container, options);
-  if (attractionStore.state.resAttractions.length === 3) {
-    return deboucingClustering(3);
-  } else if (attractionStore.state.resAttractions.length > 0) {
-    return deboucingClustering();
+  if (attractionStore.state.resAttractions.length > 0) {
+    return deboucingClustering(attractionStore.state.resAttractions.length === 3 && 3);
   }
 };
 
@@ -157,7 +155,18 @@ onMounted(() => {
 watch(
   () => attractionStore.state.resAttractions,
   () => {
-    deboucingClustering();
+    if (attractionStore.state.resAttractions.length < Math.max(Math.abs(4 - naverMap.value.getZoom()), 1)) {
+      return deboucingClustering(attractionStore.state.resAttractions.length);
+    } else if (attractionStore.state.resAttractions.length > 0) {
+      return deboucingClustering();
+    }
+    // if (attractionStore.state.resAttractions.length === 3) {
+    //   console.log(`IF LEN 3 :`);
+    //   return deboucingClustering(3);
+    // } else if (attractionStore.state.resAttractions.length > 0) {
+    //   console.log(`ELSE IF LEN 3 :`);
+    //   return deboucingClustering();
+    // }
   }
 );
 
@@ -180,7 +189,7 @@ watch(
       const curNaverMap = naverMap.value.getCenter();
       if (attractionStore.state.clusteredAttractions.length === 1) {
         const target = attractionStore.state.clusteredAttractions[0];
-        naverMap.value.morph([target.center.longitude, target.center.latitude], naverMap.value.getZoom(), true);
+        naverMap.value.morph([target.center.longitude - 0.4, target.center.latitude], naverMap.value.getZoom(), true);
       } else {
         naverMap.value.morph([curNaverMap.y, curNaverMap.x], naverMap.value.getZoom(), true);
       }
